@@ -55,13 +55,16 @@ export default async function LoginPage({
         <div className="relative flex h-full flex-col justify-between p-12">
           {/* The full lockup earns its space here — this is the one screen
               where the product introduces itself. */}
+          {/* self-start matters: this is a column flex container, whose default
+              align-items:stretch would pull the logo to the full column width
+              and squash the lockup. w-auto alone does not win against stretch. */}
           <Image
             src="/brand/envision-logo.png"
             alt="Team Envision"
             width={1240}
             height={392}
             priority
-            className="h-14 w-auto"
+            className="h-20 w-auto shrink-0 self-start"
           />
 
           <div>
