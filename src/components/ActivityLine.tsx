@@ -40,6 +40,10 @@ function describe(entry: ActivityEntry): React.ReactNode {
       return <>updated {subject(name ?? entry.projectName ?? "a project")}</>;
     case "project.deleted":
       return <>deleted {subject(name ?? "a project")}</>;
+    case "project.archived":
+      return <>archived {subject(name ?? entry.projectName ?? "a project")}</>;
+    case "project.restored":
+      return <>brought {subject(name ?? entry.projectName ?? "a project")} back</>;
     case "team.member_added":
       return <>added {subject(user ?? "somebody")} to the team</>;
     case "team.member_removed":
@@ -52,6 +56,8 @@ function describe(entry: ActivityEntry): React.ReactNode {
       );
     case "member.created":
       return <>added {subject(name ?? "a new member")} to the club</>;
+    case "member.removed":
+      return <>removed {subject(user ?? "somebody")} from the club</>;
     case "member.role_changed":
       return to === "ADMIN" ? (
         <>made {subject(user ?? "somebody")} an admin</>
@@ -67,7 +73,12 @@ export function ActivityLine({ entry, compact = false }: { entry: ActivityEntry;
   return (
     <li className={compact ? "text-[0.875rem]" : "border-b border-[var(--ink-edge)] py-3 last:border-0"}>
       <p className="text-[var(--ash)]">
-        <span className="text-[var(--paper)]">{entry.actor.name}</span> {describe(entry)}
+        {/* The actor is null once they have left the club — the entry outlives
+            the account, which is the point of keeping a log at all. */}
+        <span className={entry.actor ? "text-[var(--paper)]" : "italic text-[var(--ash)]"}>
+          {entry.actor?.name ?? "A former member"}
+        </span>{" "}
+        {describe(entry)}
       </p>
       <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-[0.8125rem] text-[var(--ash)]">
         <span className="tabular">{formatRelative(entry.createdAt)}</span>

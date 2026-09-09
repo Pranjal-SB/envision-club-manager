@@ -26,9 +26,12 @@ export interface ProjectSummary {
   viewerRole: "LEAD" | "MEMBER" | null;
 }
 
-export async function getProjectsFor(actor: Actor): Promise<ProjectSummary[]> {
+export async function getProjectsFor(
+  actor: Actor,
+  { archived = false }: { archived?: boolean } = {},
+): Promise<ProjectSummary[]> {
   const projects = await prisma.project.findMany({
-    where: { archived: false, ...visibleProjects(actor) },
+    where: { archived, ...visibleProjects(actor) },
     orderBy: [{ deadline: { sort: "asc", nulls: "last" } }, { createdAt: "desc" }],
     take: LIST_LIMIT,
     select: {
@@ -36,6 +39,7 @@ export async function getProjectsFor(actor: Actor): Promise<ProjectSummary[]> {
       name: true,
       description: true,
       deadline: true,
+      archived: true,
       memberships: { select: { role: true, user: { select: { id: true, name: true } } } },
       tasks: { select: { status: true, dueDate: true } },
     },
@@ -80,7 +84,7 @@ export interface ProjectDetail {
   description: string | null;
   deadline: Date | null;
   progress: Progress;
-  viewerRole: "LEAD" | "MEMBER" | null;
+  archived: boolean;
   team: Array<{ id: string; userId: string; name: string; email: string; role: "LEAD" | "MEMBER" }>;
   tasks: ProjectTask[];
 }
@@ -93,6 +97,7 @@ export async function getProjectDetail(id: string): Promise<ProjectDetail | null
       name: true,
       description: true,
       deadline: true,
+      archived: true,
       memberships: {
         orderBy: [{ role: "asc" }, { joinedAt: "asc" }],
         select: {
@@ -127,7 +132,7 @@ export async function getProjectDetail(id: string): Promise<ProjectDetail | null
     description: project.description,
     deadline: project.deadline,
     progress: progressOf({ total: project.tasks.length, completed }),
-    viewerRole: null,
+    archived: project.archived,
     team: project.memberships.map((m) => ({
       id: m.id,
       userId: m.user.id,
@@ -144,7 +149,8 @@ export interface ActivityEntry {
   action: string;
   entityType: string;
   createdAt: Date;
-  actor: { id: string; name: string };
+  /** Null once the person has left the club. The entry outlives them. */
+  actor: { id: string; name: string } | null;
   projectName: string | null;
   meta: Record<string, unknown> | null;
 }

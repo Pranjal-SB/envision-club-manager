@@ -8,7 +8,10 @@ export const metadata = { title: "Projects — Envision" };
 
 export default async function ProjectsPage() {
   const actor = await requireActor();
-  const projects = await getProjectsFor(actor);
+  const [projects, archived] = await Promise.all([
+    getProjectsFor(actor),
+    getProjectsFor(actor, { archived: true }),
+  ]);
 
   return (
     <div>
@@ -63,6 +66,29 @@ export default async function ProjectsPage() {
             </li>
           ))}
         </ul>
+      )}
+
+      {archived.length > 0 && (
+        <section className="mt-16">
+          <h2 className="border-b border-[var(--ink-edge)] pb-2 text-[0.9375rem] text-[var(--ash)]">
+            Archived
+          </h2>
+          <ul>
+            {archived.map((project) => (
+              <li key={project.id} className="border-b border-[var(--ink-edge)]">
+                <Link
+                  href={`/projects/${project.id}`}
+                  className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4 text-[var(--ash)] transition-colors hover:bg-[var(--ink-lit)] hover:text-[var(--paper)]"
+                >
+                  <span>{project.name}</span>
+                  <span className="tabular text-[0.8125rem]">
+                    {project.progress.completed}/{project.progress.total} done
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
     </div>
   );

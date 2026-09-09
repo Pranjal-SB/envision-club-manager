@@ -67,6 +67,21 @@ export function TaskForm({ projectId, team, task, onDone, onCancel }: Props) {
         />
       </div>
 
+      <div className="space-y-1.5">
+        <label htmlFor={`desc-${task?.id ?? "new"}`} className={label}>
+          Detail <span className="text-[var(--ash)]">— optional</span>
+        </label>
+        <textarea
+          id={`desc-${task?.id ?? "new"}`}
+          name="description"
+          rows={2}
+          maxLength={2000}
+          defaultValue={task?.description ?? ""}
+          placeholder="What does done look like?"
+          className={`${field} placeholder:text-[var(--ash)]`}
+        />
+      </div>
+
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="space-y-1.5">
           <label htmlFor={`assignee-${task?.id ?? "new"}`} className={label}>

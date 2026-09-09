@@ -113,7 +113,9 @@ and the row stays `TODO` in Postgres.
   not enumerate who is in the club
 - Role-based access enforced server-side on every mutation
 - Projects with deadlines, teams, and per-project leads; leads edit their own, admins delete
-- Tasks with an owner, deadline, priority, and three statuses, editable and deletable by the lead
+- Tasks with an owner, detail, deadline, priority, and three statuses, editable and deletable by the lead
+- Projects archive and restore, so a finished fest leaves the active list without destroying its record
+- Members can be removed from the club; their work is unassigned rather than deleted, and their history survives
 - Destructive actions confirm in place before they run
 - Three structurally different dashboards, not one layout with different data in it
 - An audit log written in the same transaction as the change it records, so a gap is impossible
@@ -208,6 +210,7 @@ and each one authorizes before it touches data.
 | `createProject` | admin | `project.created` |
 | `updateProject` | admin, project lead | `project.updated` |
 | `deleteProject` | admin | `project.deleted` |
+| `setProjectArchived` | admin, project lead | `project.archived` / `project.restored` |
 | `addProjectMember` | admin, project lead | `team.member_added` |
 | `setProjectRole` | admin, project lead | `team.role_changed` |
 | `removeProjectMember` | admin, project lead | `team.member_removed` |
@@ -217,6 +220,7 @@ and each one authorizes before it touches data.
 | `deleteTask` | admin, project lead | `task.deleted` |
 | `createMember` | admin | `member.created` |
 | `setGlobalRole` | admin | `member.role_changed` |
+| `removeMember` | admin | `member.removed` |
 
 Every one is defined in `src/app/actions/`, validates its input with Zod, calls `authorize()`
 before the first write, and records its audit entry inside the same transaction as the change.
@@ -296,6 +300,10 @@ Choices that are not obvious:
   indexed column is smaller and faster.
 - `completedAt` is set on the transition into `COMPLETED` and cleared on the way out, so progress
   never needs the audit log to compute.
+- `AuditLog.actorId` is **nullable, `onDelete: SetNull`**. With a cascade there, removing somebody
+  from the club would silently delete everything they ever did — destroying the record the table
+  exists to keep. Their entries survive and read as "A former member".
+- `Project.archived` keeps a finished project queryable without deleting it.
 
 There is no `Session` or `Account` table: the Credentials provider uses JWT sessions and writes
 nothing to an adapter.

@@ -146,6 +146,12 @@ function TaskCard({
         {task.title}
       </p>
 
+      {task.description && task.status !== "COMPLETED" && (
+        <p className="mt-1.5 text-[0.8125rem] leading-snug text-[var(--ash)]">
+          {task.description}
+        </p>
+      )}
+
       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.8125rem]">
         {task.assignee ? (
           <span className="text-[var(--ash)]">{task.assignee.name}</span>

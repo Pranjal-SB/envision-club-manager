@@ -293,3 +293,40 @@ export async function removeProjectMember(formData: FormData): Promise<ActionRes
     return toActionError(error);
   }
 }
+
+export async function setProjectArchived(formData: FormData): Promise<ActionResult> {
+  const projectId = String(formData.get("projectId") ?? "");
+  const archived = String(formData.get("archived") ?? "") === "true";
+  if (!projectId) return { error: "No project given." };
+
+  try {
+    // Archiving is reversible, so a lead may do it to their own project.
+    // Deleting is not, and stays admin-only.
+    const { actor } = await authorize("project.update", { projectId });
+
+    const project = await prisma.project.findUniqueOrThrow({
+      where: { id: projectId },
+      select: { name: true },
+    });
+
+    await prisma.$transaction(async (tx) => {
+      await tx.project.update({ where: { id: projectId }, data: { archived } });
+      await writeAudit(tx, {
+        actorId: actor.id,
+        action: archived ? "project.archived" : "project.restored",
+        entityType: "Project",
+        entityId: projectId,
+        projectId,
+        meta: { name: project.name },
+      });
+    });
+
+    revalidatePath("/projects");
+    revalidatePath(`/projects/${projectId}`);
+    revalidatePath("/dashboard");
+    revalidatePath("/activity");
+    return {};
+  } catch (error) {
+    return toActionError(error);
+  }
+}

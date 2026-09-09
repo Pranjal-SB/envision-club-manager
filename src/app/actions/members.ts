@@ -112,3 +112,50 @@ export async function setGlobalRole(formData: FormData): Promise<ActionResult> {
     return toActionError(error);
   }
 }
+
+export async function removeMember(formData: FormData): Promise<ActionResult> {
+  const userId = String(formData.get("userId") ?? "");
+  if (!userId) return { error: "Pick somebody to remove." };
+
+  try {
+    const { actor } = await authorize("member.manage");
+
+    if (userId === actor.id) {
+      return { error: "You cannot remove yourself from the club." };
+    }
+
+    const person = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true, role: true },
+    });
+    if (!person) return { error: "That member no longer exists." };
+
+    // Same reasoning as demotion: the club must keep somebody who can let
+    // people back in.
+    if (person.role === "ADMIN") {
+      const admins = await prisma.user.count({ where: { role: "ADMIN" } });
+      if (admins <= 1) return { error: "The club needs at least one admin." };
+    }
+
+    await prisma.$transaction(async (tx) => {
+      // Their memberships cascade and their assigned tasks fall back to
+      // unassigned, so the work stays on the board for somebody to pick up.
+      // Their audit entries survive with a null actor — see schema.prisma.
+      await tx.user.delete({ where: { id: userId } });
+      await writeAudit(tx, {
+        actorId: actor.id,
+        action: "member.removed",
+        entityType: "User",
+        entityId: userId,
+        meta: { user: person.name },
+      });
+    });
+
+    revalidatePath("/admin");
+    revalidatePath("/activity");
+    revalidatePath("/projects");
+    return {};
+  } catch (error) {
+    return toActionError(error);
+  }
+}

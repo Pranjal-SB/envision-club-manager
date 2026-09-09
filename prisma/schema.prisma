@@ -95,8 +95,12 @@ model Task {
 }
 
 model AuditLog {
-  id         String   @id @default(cuid())
-  actorId    String
+  id String @id @default(cuid())
+
+  /// Nullable so removing someone from the club does not erase what they did.
+  /// With onDelete: Cascade here, deleting a user would silently delete their
+  /// entire history — destroying the record this table exists to keep.
+  actorId    String?
   action     String
   entityType String
   entityId   String
@@ -105,7 +109,7 @@ model AuditLog {
   meta       Json?
   createdAt  DateTime @default(now())
 
-  actor User @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
 
   @@index([projectId, createdAt])
   @@index([createdAt])

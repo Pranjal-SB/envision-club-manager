@@ -2,7 +2,7 @@
 
 import { useRef, useState, useTransition } from "react";
 import { createProject } from "@/app/actions/projects";
-import { createMember, setGlobalRole } from "@/app/actions/members";
+import { createMember, removeMember, setGlobalRole } from "@/app/actions/members";
 import { Person } from "@/components/ui";
 import { pluralise } from "@/lib/format";
 
@@ -20,6 +20,7 @@ const field =
 
 export function AdminPanels({ actorId, members }: { actorId: string; members: Member[] }) {
   const [error, setError] = useState<string | null>(null);
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const projectForm = useRef<HTMLFormElement>(null);
   const memberForm = useRef<HTMLFormElement>(null);
@@ -180,24 +181,60 @@ export function AdminPanels({ actorId, members }: { actorId: string; members: Me
                 {member.taskCount} {pluralise(member.taskCount, "task")}
               </p>
 
-              <div className="ml-8 sm:ml-0 sm:justify-self-end">
+              <div className="ml-8 flex flex-wrap items-center gap-x-3 gap-y-1 sm:ml-0 sm:justify-self-end">
                 {member.id === actorId ? (
                   <span className="text-[0.8125rem] text-[var(--ash)]">You · Admin</span>
+                ) : confirmingId === member.id ? (
+                  <>
+                    {/* Removing somebody unassigns their tasks and cannot be
+                        undone, so it asks first. Their history survives. */}
+                    <span className="text-[0.8125rem] text-[var(--ash)]">
+                      Remove {member.name}?
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const data = new FormData();
+                        data.set("userId", member.id);
+                        submit(removeMember, data);
+                        setConfirmingId(null);
+                      }}
+                      className="text-[0.8125rem] text-[var(--ember)] transition-opacity hover:opacity-80"
+                    >
+                      Remove
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setConfirmingId(null)}
+                      className="text-[0.8125rem] text-[var(--ash)] transition-colors hover:text-[var(--paper)]"
+                    >
+                      Keep
+                    </button>
+                  </>
                 ) : (
-                  <select
-                    aria-label={`Access for ${member.name}`}
-                    value={member.role}
-                    onChange={(event) => {
-                      const data = new FormData();
-                      data.set("userId", member.id);
-                      data.set("role", event.target.value);
-                      submit(setGlobalRole, data);
-                    }}
-                    className="rounded-[3px] border border-[var(--ink-edge)] bg-[var(--ink-lit)] px-2 py-1 text-[0.8125rem] text-[var(--paper)]"
-                  >
-                    <option value="MEMBER">Member</option>
-                    <option value="ADMIN">Admin</option>
-                  </select>
+                  <>
+                    <select
+                      aria-label={`Access for ${member.name}`}
+                      value={member.role}
+                      onChange={(event) => {
+                        const data = new FormData();
+                        data.set("userId", member.id);
+                        data.set("role", event.target.value);
+                        submit(setGlobalRole, data);
+                      }}
+                      className="rounded-[3px] border border-[var(--ink-edge)] bg-[var(--ink-lit)] px-2 py-1 text-[0.8125rem] text-[var(--paper)]"
+                    >
+                      <option value="MEMBER">Member</option>
+                      <option value="ADMIN">Admin</option>
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => setConfirmingId(member.id)}
+                      className="text-[0.8125rem] text-[var(--ash)] transition-colors hover:text-[var(--ember)]"
+                    >
+                      Remove
+                    </button>
+                  </>
                 )}
               </div>
             </li>

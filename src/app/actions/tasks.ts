@@ -27,6 +27,7 @@ const createTaskSchema = z.object({
 const updateTaskSchema = z.object({
   taskId: z.string().min(1),
   title: z.string().trim().min(1).max(200),
+  description: z.string().trim().max(2000).optional(),
   assigneeId: z.string().optional(),
   priority: prioritySchema,
   dueDate: z.string().optional(),
@@ -160,6 +161,7 @@ export async function updateTask(formData: FormData): Promise<ActionResult> {
         where: { id: input.taskId },
         data: {
           title: input.title,
+          description: input.description ?? null,
           assigneeId: input.assigneeId ?? null,
           priority: input.priority,
           dueDate: parseDate(input.dueDate),

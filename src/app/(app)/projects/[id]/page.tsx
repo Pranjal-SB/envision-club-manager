@@ -45,6 +45,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           description: project.description,
           deadline: project.deadline,
           progress: project.progress,
+          archived: project.archived,
         }}
         overdue={overdue}
         canEdit={canManage}

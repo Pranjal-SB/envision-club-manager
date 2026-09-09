@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import { deleteProject, updateProject } from "@/app/actions/projects";
+import { deleteProject, setProjectArchived, updateProject } from "@/app/actions/projects";
 import { ProgressBar } from "@/components/ui";
 import { formatDeadline, pluralise, toDateInput, type Progress } from "@/lib/format";
 
@@ -15,6 +15,7 @@ interface Props {
     description: string | null;
     deadline: Date | null;
     progress: Progress;
+    archived: boolean;
   };
   overdue: number;
   canEdit: boolean;
@@ -28,6 +29,17 @@ export function ProjectHeader({ project, overdue, canEdit, canDelete }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
+
+  function setArchived(archived: boolean) {
+    setError(null);
+    const data = new FormData();
+    data.set("projectId", project.id);
+    data.set("archived", String(archived));
+    startTransition(async () => {
+      const result = await setProjectArchived(data);
+      if (result.error) setError(result.error);
+    });
+  }
 
   function destroy() {
     setError(null);
@@ -134,6 +146,12 @@ export function ProjectHeader({ project, overdue, canEdit, canDelete }: Props) {
 
   return (
     <header className={pending ? "opacity-70" : undefined}>
+      {project.archived && (
+        <p className="mb-3 inline-block rounded-[3px] border border-[var(--ink-edge)] px-2 py-1 text-[0.8125rem] text-[var(--ash)]">
+          Archived — kept for the record, out of the active list
+        </p>
+      )}
+
       <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
         <h1 className="display text-[clamp(1.75rem,4vw,2.75rem)]">{project.name}</h1>
         <span
@@ -187,13 +205,22 @@ export function ProjectHeader({ project, overdue, canEdit, canDelete }: Props) {
             </>
           ) : (
             <>
-              {canEdit && (
+              {canEdit && !project.archived && (
                 <button
                   type="button"
                   onClick={() => setEditing(true)}
                   className="text-[var(--ash)] transition-colors hover:text-[var(--glow)]"
                 >
                   Edit project
+                </button>
+              )}
+              {canEdit && (
+                <button
+                  type="button"
+                  onClick={() => setArchived(!project.archived)}
+                  className="text-[var(--ash)] transition-colors hover:text-[var(--glow)]"
+                >
+                  {project.archived ? "Restore project" : "Archive project"}
                 </button>
               )}
               {canDelete && (

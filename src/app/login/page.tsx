@@ -2,6 +2,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
 import { auth, signIn } from "@/auth";
+import { prisma } from "@/lib/db";
 
 export const metadata = { title: "Sign in — Envision" };
 
@@ -16,8 +17,21 @@ export default async function LoginPage({
 }: {
   searchParams: Promise<{ error?: string; next?: string }>;
 }) {
+  /*
+    Trusting the token alone here causes an infinite redirect loop: if the
+    account behind it is gone (removed from the club, or a rebuilt database),
+    the app pages bounce to /login while /login bounces back to /dashboard.
+    The token is a cache, so verify the account still exists — the same rule
+    guard.ts follows.
+  */
   const session = await auth();
-  if (session?.user?.id) redirect("/dashboard");
+  if (session?.user?.id) {
+    const stillExists = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { id: true },
+    });
+    if (stillExists) redirect("/dashboard");
+  }
 
   const { error, next } = await searchParams;
 
