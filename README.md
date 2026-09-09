@@ -112,8 +112,9 @@ and the row stays `TODO` in Postgres.
 - Email and password sign-in, bcrypt at cost 12, constant-time rejection so response latency does
   not enumerate who is in the club
 - Role-based access enforced server-side on every mutation
-- Projects with deadlines, teams, and per-project leads
-- Tasks with an owner, deadline, priority, and three statuses
+- Projects with deadlines, teams, and per-project leads; leads edit their own, admins delete
+- Tasks with an owner, deadline, priority, and three statuses, editable and deletable by the lead
+- Destructive actions confirm in place before they run
 - Three structurally different dashboards, not one layout with different data in it
 - An audit log written in the same transaction as the change it records, so a gap is impossible
 - A public landing page at `/`, so a reviewer sees the argument before the login form
@@ -195,6 +196,32 @@ These are Team Envision's marks, used here for a submission addressed to them.
 Two notes for anyone running this on an older mental model: Next 16 renamed `middleware.ts` to
 `proxy.ts` (Node runtime only, no edge), and Prisma 7 dropped the Rust query engine — the
 connection URL lives in `prisma.config.ts` and the client needs a driver adapter.
+
+## API
+
+There is no REST layer to document: every mutation is a Next.js **server action**, so the
+client calls a typed function and the network shape is generated. That is the whole surface,
+and each one authorizes before it touches data.
+
+| Action | Who may call it | Audited as |
+|---|---|---|
+| `createProject` | admin | `project.created` |
+| `updateProject` | admin, project lead | `project.updated` |
+| `deleteProject` | admin | `project.deleted` |
+| `addProjectMember` | admin, project lead | `team.member_added` |
+| `setProjectRole` | admin, project lead | `team.role_changed` |
+| `removeProjectMember` | admin, project lead | `team.member_removed` |
+| `createTask` | admin, project lead | `task.created` |
+| `updateTask` | admin, project lead | `task.updated` |
+| `setTaskStatus` | admin, lead, or the assignee | `task.status_changed` |
+| `deleteTask` | admin, project lead | `task.deleted` |
+| `createMember` | admin | `member.created` |
+| `setGlobalRole` | admin | `member.role_changed` |
+
+Every one is defined in `src/app/actions/`, validates its input with Zod, calls `authorize()`
+before the first write, and records its audit entry inside the same transaction as the change.
+
+The only HTTP route is `/api/auth/[...nextauth]`, owned by Auth.js.
 
 ## Running it
 

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { setTaskStatus } from "@/app/actions/tasks";
+import { deleteTask, setTaskStatus } from "@/app/actions/tasks";
+import { TaskForm } from "@/components/TaskForm";
 import type { ProjectTask } from "@/lib/queries";
 import { STATUS_LABEL, dueState, formatDeadline, type TaskStatus } from "@/lib/format";
 
@@ -11,6 +12,8 @@ interface Props {
   tasks: ProjectTask[];
   viewerId: string;
   canManage: boolean;
+  team: Array<{ userId: string; name: string }>;
+  projectId: string;
 }
 
 /**
@@ -18,12 +21,12 @@ interface Props {
  * the same capability, a fraction of the code, and it works with a keyboard
  * on a phone.
  */
-export function TaskBoard({ tasks, viewerId, canManage }: Props) {
+export function TaskBoard({ tasks, viewerId, canManage, team, projectId }: Props) {
   const [error, setError] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  const mayMove = (task: ProjectTask) =>
-    canManage || (task.assignee?.id === viewerId);
+  const mayMove = (task: ProjectTask) => canManage || task.assignee?.id === viewerId;
 
   function move(taskId: string, status: TaskStatus) {
     setError(null);
@@ -32,6 +35,16 @@ export function TaskBoard({ tasks, viewerId, canManage }: Props) {
     data.set("status", status);
     startTransition(async () => {
       const result = await setTaskStatus(data);
+      if (result.error) setError(result.error);
+    });
+  }
+
+  function remove(taskId: string) {
+    setError(null);
+    const data = new FormData();
+    data.set("taskId", taskId);
+    startTransition(async () => {
+      const result = await deleteTask(data);
       if (result.error) setError(result.error);
     });
   }
@@ -49,23 +62,38 @@ export function TaskBoard({ tasks, viewerId, canManage }: Props) {
           const inColumn = tasks.filter((t) => t.status === column);
           return (
             <section key={column}>
-              <h3 className="flex items-baseline gap-2 border-b border-[var(--ink-edge)] pb-2 text-[0.875rem]">
+              <h2 className="flex items-baseline gap-2 border-b border-[var(--ink-edge)] pb-2 text-[0.875rem]">
                 <span>{STATUS_LABEL[column]}</span>
                 <span className="tabular text-[var(--ash)]">{inColumn.length}</span>
-              </h3>
+              </h2>
 
               {inColumn.length === 0 ? (
                 <p className="py-6 text-[0.875rem] text-[var(--ash)]">Nothing here.</p>
               ) : (
                 <ul className="mt-3 space-y-3">
-                  {inColumn.map((task) => (
-                    <TaskCard
-                      key={task.id}
-                      task={task}
-                      canMove={mayMove(task)}
-                      onMove={(status) => move(task.id, status)}
-                    />
-                  ))}
+                  {inColumn.map((task) =>
+                    editingId === task.id ? (
+                      <li key={task.id}>
+                        <TaskForm
+                          projectId={projectId}
+                          team={team}
+                          task={task}
+                          onDone={() => setEditingId(null)}
+                          onCancel={() => setEditingId(null)}
+                        />
+                      </li>
+                    ) : (
+                      <TaskCard
+                        key={task.id}
+                        task={task}
+                        canMove={mayMove(task)}
+                        canManage={canManage}
+                        onMove={(status) => move(task.id, status)}
+                        onEdit={() => setEditingId(task.id)}
+                        onDelete={() => remove(task.id)}
+                      />
+                    ),
+                  )}
                 </ul>
               )}
             </section>
@@ -79,12 +107,19 @@ export function TaskBoard({ tasks, viewerId, canManage }: Props) {
 function TaskCard({
   task,
   canMove,
+  canManage,
   onMove,
+  onEdit,
+  onDelete,
 }: {
   task: ProjectTask;
   canMove: boolean;
+  canManage: boolean;
   onMove: (status: TaskStatus) => void;
+  onEdit: () => void;
+  onDelete: () => void;
 }) {
+  const [confirming, setConfirming] = useState(false);
   const state = dueState(task.dueDate, task.status);
   const high = task.priority === "HIGH" && task.status !== "COMPLETED";
 
@@ -145,7 +180,7 @@ function TaskCard({
               type="button"
               disabled={!canMove || current}
               onClick={() => onMove(status)}
-              aria-current={current ? "true" : undefined}
+              aria-pressed={current}
               title={
                 canMove
                   ? `Move to ${STATUS_LABEL[status]}`
@@ -156,7 +191,7 @@ function TaskCard({
                   ? "bg-[var(--ink-edge)] text-[var(--glow)]"
                   : canMove
                     ? "text-[var(--ash)] hover:bg-[var(--ink-edge)] hover:text-[var(--paper)]"
-                    : "text-[var(--ink-edge)]"
+                    : "text-[var(--ash)] opacity-40"
               }`}
             >
               {STATUS_LABEL[status]}
@@ -164,6 +199,49 @@ function TaskCard({
           );
         })}
       </div>
+
+      {canManage && (
+        <div className="mt-2.5 flex flex-wrap items-center gap-x-3 text-[0.75rem]">
+          {confirming ? (
+            <>
+              {/* Two steps, because deleting a task destroys its history and
+                  nothing here can undo it. */}
+              <span className="text-[var(--ash)]">Delete this task?</span>
+              <button
+                type="button"
+                onClick={onDelete}
+                className="text-[var(--ember)] transition-opacity hover:opacity-80"
+              >
+                Delete
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirming(false)}
+                className="text-[var(--ash)] transition-colors hover:text-[var(--paper)]"
+              >
+                Keep
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={onEdit}
+                className="text-[var(--ash)] transition-colors hover:text-[var(--glow)]"
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirming(true)}
+                className="text-[var(--ash)] transition-colors hover:text-[var(--ember)]"
+              >
+                Delete
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </li>
   );
 }

@@ -104,3 +104,10 @@ export function countInWords(n: number): string {
 export function pluralise(n: number, singular: string, plural = `${singular}s`): string {
   return n === 1 ? singular : plural;
 }
+
+/** `<input type="date">` wants yyyy-mm-dd in local time, not an ISO instant. */
+export function toDateInput(date: Date | null): string {
+  if (!date) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}

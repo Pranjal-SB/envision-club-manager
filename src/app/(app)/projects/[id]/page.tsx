@@ -1,11 +1,10 @@
 import { notFound, redirect } from "next/navigation";
 import { ForbiddenError, UnauthenticatedError, authorize } from "@/lib/guard";
 import { getProjectDetail, getAllMembers } from "@/lib/queries";
-import { formatDeadline, pluralise } from "@/lib/format";
-import { ProgressBar } from "@/components/ui";
+import { ProjectHeader } from "@/components/ProjectHeader";
 import { TaskBoard } from "@/components/TaskBoard";
 import { TeamPanel } from "@/components/TeamPanel";
-import { NewTaskForm } from "@/components/NewTaskForm";
+import { AddTask } from "@/components/AddTask";
 
 export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -35,35 +34,33 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     (t) => t.status !== "COMPLETED" && t.dueDate !== null && t.dueDate < new Date(),
   ).length;
 
+  const team = project.team.map((m) => ({ userId: m.userId, name: m.name }));
+
   return (
     <div className="space-y-12">
-      <header>
-        <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
-          <h1 className="display text-[clamp(1.75rem,4vw,2.75rem)]">{project.name}</h1>
-          <span
-            className={`tabular text-[0.875rem] ${
-              overdue > 0 ? "text-[var(--ember)]" : "text-[var(--ash)]"
-            }`}
-          >
-            {overdue > 0
-              ? `${overdue} ${pluralise(overdue, "task")} late`
-              : formatDeadline(project.deadline, "TODO")}
-          </span>
-        </div>
-
-        {project.description && (
-          <p className="measure mt-3 text-[var(--ash)]">{project.description}</p>
-        )}
-
-        <div className="mt-6 max-w-md">
-          <ProgressBar progress={project.progress} label={`${project.name} progress`} />
-        </div>
-      </header>
+      <ProjectHeader
+        project={{
+          id: project.id,
+          name: project.name,
+          description: project.description,
+          deadline: project.deadline,
+          progress: project.progress,
+        }}
+        overdue={overdue}
+        canEdit={canManage}
+        canDelete={actor.role === "ADMIN"}
+      />
 
       <div className="grid gap-12 lg:grid-cols-[1fr_16rem] lg:gap-14">
         <div className="space-y-8">
-          {canManage && <NewTaskForm projectId={project.id} team={project.team} />}
-          <TaskBoard tasks={project.tasks} viewerId={actor.id} canManage={canManage} />
+          {canManage && <AddTask projectId={project.id} team={team} />}
+          <TaskBoard
+            tasks={project.tasks}
+            viewerId={actor.id}
+            canManage={canManage}
+            team={team}
+            projectId={project.id}
+          />
         </div>
 
         <TeamPanel
