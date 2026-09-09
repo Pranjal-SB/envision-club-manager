@@ -6,8 +6,8 @@ const LIST_LIMIT = 200;
 const ACTIVITY_LIMIT = 60;
 
 /**
- * Scoping — which rows an actor may see — is a query concern and lives here.
- * Authorization — what an actor may do — is `can()`'s job. Keeping them apart
+ * Scoping (which rows an actor may see) is a query concern and lives here.
+ * Authorization (what an actor may do) is `can()`'s job. Keeping them apart
  * stops "can they see it" and "may they change it" from drifting into one
  * blurred check.
  */

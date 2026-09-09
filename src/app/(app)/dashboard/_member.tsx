@@ -5,7 +5,7 @@ import { Deadline, EmptyState, Priority, ProgressBar, SectionHeading, StatusDot 
 
 /**
  * The hero is the late work, not a row of statistics. A member opening this
- * page has one real question — what have I let slip — and the page answers it
+ * page has one real question, what have I let slip, and the page answers it
  * in the first line instead of making them assemble it from four tiles.
  */
 export function LateHeadline({ count }: { count: number }) {

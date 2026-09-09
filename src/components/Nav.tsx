@@ -5,7 +5,7 @@ import type { Actor } from "@/lib/authz";
 
 /**
  * The admin link is hidden from non-admins for tidiness only. `/admin` is gated
- * in proxy.ts and every action it calls authorizes independently — hiding a link
+ * in proxy.ts and every action it calls authorizes independently; hiding a link
  * has never been a permission check.
  */
 export function Nav({ actor, name }: { actor: Actor; name: string }) {

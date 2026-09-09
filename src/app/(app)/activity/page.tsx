@@ -3,7 +3,7 @@ import { getActivityFor } from "@/lib/queries";
 import { ActivityLine } from "@/components/ActivityLine";
 import { EmptyState } from "@/components/ui";
 
-export const metadata = { title: "Activity — Envision" };
+export const metadata = { title: "Activity: Envision" };
 
 function dayLabel(date: Date, now = new Date()): string {
   const startOf = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();

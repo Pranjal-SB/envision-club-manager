@@ -6,7 +6,7 @@ import { prisma } from "@/lib/db";
 /**
  * A bcrypt hash of a value nobody can supply. Compared against when the email
  * does not exist, so a missing account and a wrong password take the same time
- * to reject — otherwise response latency enumerates who is in the club.
+ * to reject; otherwise response latency enumerates who is in the club.
  */
 const DUMMY_HASH = "$2b$12$UESaABgGcbZm0FJOmnDuE.UOa/rf3fckX.NUk92SFeX.PRxjuGoUe";
 

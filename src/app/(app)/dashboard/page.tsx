@@ -5,11 +5,11 @@ import { AdminView } from "./_admin";
 import { LeadView } from "./_lead";
 import { MemberView } from "./_member";
 
-export const metadata = { title: "Dashboard — Envision" };
+export const metadata = { title: "Dashboard: Envision" };
 
 /**
  * One route, three structurally different pages. The role does not merely
- * filter the same layout — an admin, a lead, and a member are asking different
+ * filter the same layout: an admin, a lead, and a member are asking different
  * questions, so they get different pages.
  */
 export default async function DashboardPage() {

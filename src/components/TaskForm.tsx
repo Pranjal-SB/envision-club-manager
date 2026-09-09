@@ -21,7 +21,7 @@ interface Props {
 
 /**
  * One form for both creating and editing. The two differ only in which action
- * they call and what they start with — keeping them apart would mean two
+ * they call and what they start with; keeping them apart would mean two
  * copies of the same six fields drifting away from each other.
  */
 export function TaskForm({ projectId, team, task, onDone, onCancel }: Props) {
@@ -69,7 +69,7 @@ export function TaskForm({ projectId, team, task, onDone, onCancel }: Props) {
 
       <div className="space-y-1.5">
         <label htmlFor={`desc-${task?.id ?? "new"}`} className={label}>
-          Detail <span className="text-[var(--ash)]">— optional</span>
+          Detail <span className="text-[var(--ash)]">(optional)</span>
         </label>
         <textarea
           id={`desc-${task?.id ?? "new"}`}

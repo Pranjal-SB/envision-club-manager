@@ -44,7 +44,7 @@ export function AdminView({ data }: { data: AdminDashboard }) {
                     {/*
                       Ember means late. A project can be at risk for low
                       progress against a near deadline without anything being
-                      overdue yet — colouring that red would make the state
+                      overdue yet; colouring that red would make the state
                       system lie, and then nobody trusts the red that matters.
                     */}
                     <span

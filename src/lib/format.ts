@@ -9,7 +9,7 @@ const SOON_DAYS = 3;
 /**
  * The single source of every state colour in the interface.
  *
- * Completed work is `done` regardless of its deadline — a task finished late is
+ * Completed work is `done` regardless of its deadline; a task finished late is
  * finished, and colouring it red forever would be a lie about what needs
  * attention now.
  */

@@ -125,7 +125,7 @@ function TaskCard({
 
   /*
     Cards are deliberately not uniform. A high-priority task carries more
-    weight and a completed one recedes — if every card looked the same, the
+    weight and a completed one recedes; if every card looked the same, the
     board would carry no information that the text does not already.
   */
   const surface = high

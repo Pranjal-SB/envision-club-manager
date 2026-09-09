@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * Redirects signed-out visitors to the login page.
  *
  * This is a convenience, not the security boundary. It checks only for the
- * presence of a session cookie and never validates it — the real gate is
+ * presence of a session cookie and never validates it; the real gate is
  * `authorize()`, called at the top of every server action and scoped read.
  * Next 16 renamed `middleware` to `proxy`; the runtime is nodejs and cannot
  * be configured.

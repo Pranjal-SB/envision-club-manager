@@ -19,7 +19,7 @@ export interface AuditEntry {
  *
  * Always call this inside the same transaction as the mutation it describes.
  * A write that succeeds while its audit entry fails leaves a gap in the record,
- * which is worse than no audit log at all — it looks complete but isn't.
+ * which is worse than no audit log at all: it looks complete but isn't.
  */
 export async function writeAudit(tx: Db, entry: AuditEntry): Promise<void> {
   await tx.auditLog.create({

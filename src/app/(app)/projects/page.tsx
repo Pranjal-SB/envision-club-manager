@@ -4,7 +4,7 @@ import { getProjectsFor } from "@/lib/queries";
 import { formatDeadline, pluralise } from "@/lib/format";
 import { EmptyState, ProgressBar } from "@/components/ui";
 
-export const metadata = { title: "Projects — Envision" };
+export const metadata = { title: "Projects: Envision" };
 
 export default async function ProjectsPage() {
   const actor = await requireActor();

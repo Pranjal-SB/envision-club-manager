@@ -148,7 +148,7 @@ export function ProjectHeader({ project, overdue, canEdit, canDelete }: Props) {
     <header className={pending ? "opacity-70" : undefined}>
       {project.archived && (
         <p className="mb-3 inline-block rounded-[3px] border border-[var(--ink-edge)] px-2 py-1 text-[0.8125rem] text-[var(--ash)]">
-          Archived — kept for the record, out of the active list
+          Archived: kept for the record, out of the active list
         </p>
       )}
 

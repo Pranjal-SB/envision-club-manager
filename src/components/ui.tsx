@@ -12,7 +12,7 @@ import {
 
 /*
   The state vocabulary. Every colour in the application is decided here from
-  state, never passed in as a prop — that is what stops the palette drifting
+  state, never passed in as a prop; that is what stops the palette drifting
   into decoration one component at a time.
 */
 

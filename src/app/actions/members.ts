@@ -140,7 +140,7 @@ export async function removeMember(formData: FormData): Promise<ActionResult> {
     await prisma.$transaction(async (tx) => {
       // Their memberships cascade and their assigned tasks fall back to
       // unassigned, so the work stays on the board for somebody to pick up.
-      // Their audit entries survive with a null actor — see schema.prisma.
+      // Their audit entries survive with a null actor, see schema.prisma.
       await tx.user.delete({ where: { id: userId } });
       await writeAudit(tx, {
         actorId: actor.id,

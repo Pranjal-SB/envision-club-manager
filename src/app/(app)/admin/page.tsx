@@ -4,7 +4,7 @@ import { getAllMembers, getProjectsFor } from "@/lib/queries";
 import { pluralise } from "@/lib/format";
 import { AdminPanels } from "@/components/AdminPanels";
 
-export const metadata = { title: "Admin — Envision" };
+export const metadata = { title: "Admin: Envision" };
 
 export default async function AdminPage() {
   // Gated here as well as in proxy.ts, and again inside every action this page

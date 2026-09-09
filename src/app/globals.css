@@ -22,8 +22,8 @@
   --ink: #111111; /* Aaruush's own page ground */
   --ink-lit: #1b1613; /* raised surface, warmed towards the orange */
   --ink-edge: #2b2320; /* hairline separation */
-  --glow: #ffe400; /* the filament — in progress, due soon, progress fill */
-  --ember: #ef6522; /* the bulb — overdue, high priority */
+  --glow: #ffe400; /* the filament: in progress, due soon, progress fill */
+  --ember: #ef6522; /* the bulb: overdue, high priority */
   --paper: #f4f2ef; /* primary text */
   --ash: #8b8580; /* completed, metadata, secondary text */
 
@@ -60,7 +60,7 @@ body {
 }
 
 /*
-  Display face. Raleway at 800 with the tracking pulled in — Aaruush set their
+  Display face. Raleway at 800 with the tracking pulled in; Aaruush set their
   own headings in Raleway Bold, and at display sizes the extra weight plus
   negative tracking keeps it from reading as the body font scaled up.
 */

@@ -10,7 +10,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   const { id } = await params;
 
   // The gate. A non-member reaching this URL directly gets the same 404 as a
-  // project that does not exist — existence is itself information.
+  // project that does not exist; existence is itself information.
   let actor;
   try {
     ({ actor } = await authorize("project.view", { projectId: id }));

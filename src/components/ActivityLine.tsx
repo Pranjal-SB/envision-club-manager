@@ -8,7 +8,7 @@ const str = (v: unknown): string | null => (typeof v === "string" ? v : null);
 
 /**
  * Audit rows are stored as an action plus loose metadata. They are read as
- * English — "Priya moved Draft sponsor deck to In progress" — because a log
+ * English, like "Priya moved Draft sponsor deck to In progress", because a log
  * nobody can skim is a log nobody checks.
  */
 function describe(entry: ActivityEntry): React.ReactNode {
@@ -73,7 +73,7 @@ export function ActivityLine({ entry, compact = false }: { entry: ActivityEntry;
   return (
     <li className={compact ? "text-[0.875rem]" : "border-b border-[var(--ink-edge)] py-3 last:border-0"}>
       <p className="text-[var(--ash)]">
-        {/* The actor is null once they have left the club — the entry outlives
+        {/* The actor is null once they have left the club; the entry outlives
             the account, which is the point of keeping a log at all. */}
         <span className={entry.actor ? "text-[var(--paper)]" : "italic text-[var(--ash)]"}>
           {entry.actor?.name ?? "A former member"}

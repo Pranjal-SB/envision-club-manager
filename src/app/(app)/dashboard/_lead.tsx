@@ -6,7 +6,7 @@ import { LateHeadline, TaskLine } from "./_member";
 
 /**
  * A lead's dashboard leads with what only a lead can fix: work nobody owns.
- * Their own assigned tasks come second — they are a member too, but that is
+ * Their own assigned tasks come second: they are a member too, but that is
  * not why they opened this page.
  */
 export function LeadView({ data, name }: { data: LeadDashboard; name: string }) {
