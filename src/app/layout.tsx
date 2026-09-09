@@ -1,17 +1,23 @@
 import type { Metadata } from "next";
-import { Fraunces, Archivo } from "next/font/google";
+import { Raleway, Inter } from "next/font/google";
 import "./globals.css";
 
-const fraunces = Fraunces({
+/*
+  Aaruush's own type stack. Their site loads Xirod for display and Raleway
+  Bold / Inter for everything else. Xirod is not freely licensed for
+  redistribution, so Raleway ExtraBold carries the display role here — still
+  their face, and legible at the sizes a dashboard needs.
+*/
+const raleway = Raleway({
   subsets: ["latin"],
-  axes: ["SOFT", "WONK", "opsz"],
-  variable: "--font-fraunces",
+  weight: ["600", "800"],
+  variable: "--font-raleway",
   display: "swap",
 });
 
-const archivo = Archivo({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-archivo",
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -23,7 +29,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${archivo.variable}`}>
+    <html lang="en" className={`${raleway.variable} ${inter.variable}`}>
       <body>{children}</body>
     </html>
   );

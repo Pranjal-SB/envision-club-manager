@@ -95,7 +95,7 @@ export function AdminPanels({ actorId, members }: { actorId: string; members: Me
 
             <button
               type="submit"
-              className="rounded-[3px] bg-[var(--glow)] px-4 py-2 text-[0.875rem] font-medium text-[#17130f] transition-opacity hover:opacity-90"
+              className="rounded-[3px] bg-[var(--glow)] px-4 py-2 text-[0.875rem] font-medium text-[var(--ink)] transition-opacity hover:opacity-90"
             >
               Create project
             </button>

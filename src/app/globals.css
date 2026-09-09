@@ -9,14 +9,23 @@
   Nothing is coloured because it looked nice.
 */
 
+/*
+  The palette is Aaruush's own, not an approximation of it.
+
+  --ink is their site's `--default-bg-color`. The two accents are sampled from
+  the Team Envision mark itself: the bulb's orange (#EF6522 in their
+  stylesheet, #F06C24 dominant in the logo pixels) and its filament yellow
+  (#FFE400 / #FCE406). Those two colours already mean "lit" in their identity,
+  which is exactly what they mean here.
+*/
 :root {
-  --ink: #17130f; /* warm ground with real chroma — a dim room, not black */
-  --ink-lit: #231c15; /* a surface catching light */
-  --ink-edge: #332a20; /* hairline separation */
-  --glow: #f5a524; /* in progress, due soon, progress fill */
-  --ember: #e0523a; /* overdue, high priority */
-  --paper: #ede6da; /* primary text */
-  --ash: #8a8078; /* completed, metadata, secondary text */
+  --ink: #111111; /* Aaruush's own page ground */
+  --ink-lit: #1b1613; /* raised surface, warmed towards the orange */
+  --ink-edge: #2b2320; /* hairline separation */
+  --glow: #ffe400; /* the filament — in progress, due soon, progress fill */
+  --ember: #ef6522; /* the bulb — overdue, high priority */
+  --paper: #f4f2ef; /* primary text */
+  --ash: #8b8580; /* completed, metadata, secondary text */
 
   --measure: 68ch;
   --radius: 3px;
@@ -32,8 +41,8 @@
   --color-ember: var(--ember);
   --color-paper: var(--paper);
   --color-ash: var(--ash);
-  --font-display: var(--font-fraunces);
-  --font-sans: var(--font-archivo);
+  --font-display: var(--font-raleway);
+  --font-sans: var(--font-inter);
   --radius-sm: var(--radius);
 }
 
@@ -44,25 +53,22 @@ html {
 body {
   background: var(--ink);
   color: var(--paper);
-  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   font-size: 1rem;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
 
 /*
-  Display face. Fraunces carries the headlines; its optical-size and soft axes
-  are set once here so headings never read as the body font scaled up.
+  Display face. Raleway at 800 with the tracking pulled in — Aaruush set their
+  own headings in Raleway Bold, and at display sizes the extra weight plus
+  negative tracking keeps it from reading as the body font scaled up.
 */
 .display {
-  font-family: var(--font-fraunces), ui-serif, Georgia, serif;
-  font-variation-settings:
-    "SOFT" 30,
-    "WONK" 1,
-    "opsz" 96;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 1.06;
+  font-family: var(--font-raleway), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
 }
 
 /* Dates, counts, and durations must not shift width as they change. */

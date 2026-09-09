@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { signOut } from "@/auth";
 import type { Actor } from "@/lib/authz";
 
@@ -21,8 +22,18 @@ export function Nav({ actor, name }: { actor: Actor; name: string }) {
         aria-label="Main"
         className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-5 py-4 sm:px-8"
       >
-        <Link href="/dashboard" className="display mr-2 text-[1.25rem] text-[var(--paper)]">
-          Envision
+        {/* The mark alone, not mark-plus-wordmark: at nav size the lockup's
+            own type would compete with the interface's. */}
+        <Link href="/dashboard" className="mr-2 flex items-center gap-2.5">
+          <Image
+            src="/brand/envision-mark.png"
+            alt=""
+            width={220}
+            height={316}
+            priority
+            className="h-8 w-auto"
+          />
+          <span className="display text-[1.125rem] text-[var(--paper)]">Envision</span>
         </Link>
 
         <ul className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[0.9375rem]">

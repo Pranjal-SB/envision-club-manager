@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
 import { auth, signIn } from "@/auth";
@@ -42,13 +43,29 @@ export default async function LoginPage({
       <section className="relative hidden overflow-hidden border-r border-[var(--ink-edge)] lg:block">
         <div
           aria-hidden
-          className="absolute -top-40 -left-24 size-[36rem] rounded-full opacity-[0.18] blur-[90px]"
-          style={{ background: "radial-gradient(circle, var(--glow), transparent 65%)" }}
+          className="absolute -top-52 -left-32 size-[40rem] rounded-full opacity-25 blur-[100px]"
+          style={{ background: "radial-gradient(circle, var(--ember), transparent 62%)" }}
         />
+        <div
+          aria-hidden
+          className="absolute -top-24 left-8 size-[22rem] rounded-full opacity-20 blur-[90px]"
+          style={{ background: "radial-gradient(circle, var(--glow), transparent 60%)" }}
+        />
+
         <div className="relative flex h-full flex-col justify-between p-12">
-          <p className="display text-[1.25rem]">Envision</p>
+          {/* The full lockup earns its space here — this is the one screen
+              where the product introduces itself. */}
+          <Image
+            src="/brand/envision-logo.png"
+            alt="Team Envision"
+            width={1240}
+            height={392}
+            priority
+            className="h-14 w-auto"
+          />
+
           <div>
-            <h1 className="display measure text-[clamp(2.5rem,4vw,3.75rem)]">
+            <h1 className="display measure text-[clamp(2.25rem,3.6vw,3.25rem)]">
               Everything the club is building, and what is running late.
             </h1>
             <p className="measure mt-6 text-[var(--ash)]">
@@ -56,13 +73,23 @@ export default async function LoginPage({
               work that is theirs.
             </p>
           </div>
+
           <p className="text-[0.8125rem] text-[var(--ash)]">Aaruush &rsquo;26</p>
         </div>
       </section>
 
       <section className="flex items-center justify-center px-5 py-16 sm:px-10">
         <div className="w-full max-w-sm">
-          <h2 className="display text-[2rem]">Sign in</h2>
+          <Image
+            src="/brand/envision-logo.png"
+            alt="Team Envision"
+            width={1240}
+            height={392}
+            priority
+            className="mb-10 h-11 w-auto lg:hidden"
+          />
+
+          <h2 className="display text-[1.75rem]">Sign in</h2>
 
           <form action={authenticate} className="mt-8 space-y-5">
             <input type="hidden" name="next" value={next ?? "/dashboard"} />
@@ -104,7 +131,7 @@ export default async function LoginPage({
 
             <button
               type="submit"
-              className="w-full rounded-[3px] bg-[var(--glow)] px-4 py-2.5 font-medium text-[#17130f] transition-opacity hover:opacity-90"
+              className="w-full rounded-[3px] bg-[var(--glow)] px-4 py-2.5 font-semibold text-[var(--ink)] transition-opacity hover:opacity-90"
             >
               Sign in
             </button>

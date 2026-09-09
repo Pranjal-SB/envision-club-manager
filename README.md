@@ -128,27 +128,50 @@ and the row stays `TODO` in Postgres.
 
 ## Design
 
-The visual system has one idea: **light is attention.** Aaruush's mark is a lightbulb and this
-product's job is showing what needs attention, so illumination carries state instead of decorating
-it. Overdue work burns, active work glows, finished work goes dark and recedes. Nothing is
-coloured because it looked nice.
+The visual system has one idea: **light is attention.** Team Envision's mark is a lightbulb and
+this product's job is showing what needs attention, so illumination carries state instead of
+decorating it. Overdue work burns, active work glows, finished work goes dark and recedes. Nothing
+is coloured because it looked nice.
+
+The palette is not an approximation of their brand — it is taken from it. `--ink` is the
+`--default-bg-color` on aaruush.org. The two accents are the bulb's own colours, cross-checked two
+ways: sampled from the logo's pixels (`#F06C24` dominant, `#FCE406` filament) and read from their
+stylesheet (`#EF6522`, `#FFE400`). Those two already mean "lit" in their identity, which is exactly
+what they mean here.
 
 | Token | Value | Meaning |
 |---|---|---|
-| `--ink` | `#17130F` | Ground — warm, with real chroma |
-| `--ink-lit` | `#231C15` | A surface catching light |
-| `--glow` | `#F5A524` | In progress, due soon, progress |
-| `--ember` | `#E0523A` | Overdue, high priority |
-| `--paper` | `#EDE6DA` | Text |
-| `--ash` | `#8A8078` | Completed, metadata |
+| `--ink` | `#111111` | Aaruush's own page ground |
+| `--ink-lit` | `#1B1613` | A surface catching light |
+| `--glow` | `#FFE400` | The filament — in progress, due soon, progress |
+| `--ember` | `#EF6522` | The bulb — overdue, high priority |
+| `--paper` | `#F4F2EF` | Text |
+| `--ash` | `#8B8580` | Completed, metadata |
 
-Because ember means *late*, it is never used for anything that is not late — a project can be at
-risk for slow progress against a near deadline without being overdue, and colouring that red would
-make the red that matters worth ignoring.
+Because ember means *late*, it is never used for anything that is not late. A project can be at
+risk for slow progress against a near deadline without anything being overdue — that reads yellow,
+not orange. Colouring it orange would make the orange that matters worth ignoring.
 
-Type is Fraunces for display against Archivo for interface, with tabular figures on every date and
-count so numbers do not shift width as they change. Cards are deliberately not uniform: high
-priority carries more weight, completed work recedes.
+Every pair clears WCAG AA for normal text on the ink ground: paper 16.9:1, glow 14.7:1, ember
+5.9:1, ash 5.2:1. Yellow and orange also differ sharply in lightness rather than hue alone, so the
+two states stay distinguishable without relying on colour vision — and the text always names the
+state regardless.
+
+Type is Aaruush's own stack. Their site loads Xirod for display with Raleway Bold and Inter beneath
+it; Xirod is not freely licensed for redistribution, so **Raleway** at 800 carries display here and
+**Inter** carries the interface. Tabular figures on every date and count, so numbers do not shift
+width as they change. Cards are deliberately not uniform: high priority carries more weight,
+completed work recedes.
+
+### Brand assets
+
+| File | Source |
+|---|---|
+| `public/brand/envision-mark.png` | The '26 bulb, extracted from the recruitment brief PDF and composited with its soft mask |
+| `public/brand/envision-logo.png` | The full lockup, from `aaruush.org/a25/envision logo.png` — white type, so it reads on the dark ground |
+| `public/brand/envision-26-logo.png` | The '26 lockup from the brief. Dark type, kept for reference; unused in the dark UI |
+
+These are Team Envision's marks, used here for a submission addressed to them.
 
 ![Task board](docs/screenshots/board.png)
 
@@ -162,6 +185,7 @@ priority carries more weight, completed work recedes.
 | Auth | Auth.js v5, Credentials provider, JWT sessions |
 | Validation | Zod at every action boundary |
 | Styling | Tailwind CSS 4 with CSS custom properties |
+| Type | Raleway + Inter, Aaruush's own faces, via `next/font` |
 | Tests | Vitest |
 
 Two notes for anyone running this on an older mental model: Next 16 renamed `middleware.ts` to

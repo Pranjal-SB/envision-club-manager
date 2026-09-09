@@ -102,7 +102,7 @@ export function NewTaskForm({ projectId, team }: Props) {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-[3px] bg-[var(--glow)] px-3 py-1.5 text-[0.875rem] font-medium text-[#17130f] transition-opacity hover:opacity-90"
+          className="rounded-[3px] bg-[var(--glow)] px-3 py-1.5 text-[0.875rem] font-medium text-[var(--ink)] transition-opacity hover:opacity-90"
         >
           Add task
         </button>
