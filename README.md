@@ -5,7 +5,7 @@ the club, project leads run their own projects, and members see the work that is
 
 Built for the Team Envision (Aaruush '26) recruitment task, web development track.
 
-![Dashboard as an admin](docs/screenshots/dashboard-admin.png)
+![The landing page](docs/screenshots/home.png)
 
 ## Demo
 
@@ -16,6 +16,9 @@ Live at **[add your deployment URL]**. The password is the same for all three ac
 | Admin | `aditi@envision.club` | `envision2026` |
 | Project lead | `rohan@envision.club` | `envision2026` |
 | Member | `arjun@envision.club` | `envision2026` |
+
+`/` is a public landing page that states the design argument and hands over the demo accounts;
+signed-in visitors are redirected straight to their dashboard.
 
 Sign in as each in turn — the same routes render differently, because the three roles are asking
 different questions.
@@ -113,6 +116,7 @@ and the row stays `TODO` in Postgres.
 - Tasks with an owner, deadline, priority, and three statuses
 - Three structurally different dashboards, not one layout with different data in it
 - An audit log written in the same transaction as the change it records, so a gap is impossible
+- A public landing page at `/`, so a reviewer sees the argument before the login form
 - Responsive from 360px up
 - Seed script producing a populated, believable club in one command
 
