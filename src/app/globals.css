@@ -1,26 +1,128 @@
 @import "tailwindcss";
 
+/*
+  Light is attention.
+
+  Aaruush's mark is a lightbulb and this product's job is showing what needs
+  attention, so illumination is the state system rather than decoration:
+  overdue work burns, active work glows, finished work goes dark and recedes.
+  Nothing is coloured because it looked nice.
+*/
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #17130f; /* warm ground with real chroma — a dim room, not black */
+  --ink-lit: #231c15; /* a surface catching light */
+  --ink-edge: #332a20; /* hairline separation */
+  --glow: #f5a524; /* in progress, due soon, progress fill */
+  --ember: #e0523a; /* overdue, high priority */
+  --paper: #ede6da; /* primary text */
+  --ash: #8a8078; /* completed, metadata, secondary text */
+
+  --measure: 68ch;
+  --radius: 3px;
+
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: var(--ink);
+  --color-ink-lit: var(--ink-lit);
+  --color-ink-edge: var(--ink-edge);
+  --color-glow: var(--glow);
+  --color-ember: var(--ember);
+  --color-paper: var(--paper);
+  --color-ash: var(--ash);
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-archivo);
+  --radius-sm: var(--radius);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--ink);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+  Display face. Fraunces carries the headlines; its optical-size and soft axes
+  are set once here so headings never read as the body font scaled up.
+*/
+.display {
+  font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+  font-variation-settings:
+    "SOFT" 30,
+    "WONK" 1,
+    "opsz" 96;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.06;
+}
+
+/* Dates, counts, and durations must not shift width as they change. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+.measure {
+  max-width: var(--measure);
+}
+
+/*
+  One focus treatment for the entire application. Keyboard access is not a
+  feature to be added later; a control that cannot be seen when focused is
+  broken for anyone not using a mouse.
+*/
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--glow);
+  outline-offset: 2px;
+  border-radius: var(--radius);
+}
+
+::selection {
+  background: color-mix(in oklab, var(--glow) 35%, transparent);
+  color: var(--paper);
+}
+
+/*
+  The single orchestrated moment: the dashboard warming up on load, once.
+  Everything else in the interface moves only in response to a click.
+*/
+@keyframes warm-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.warm-up {
+  animation: warm-up 520ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.warm-up-delay-1 {
+  animation-delay: 90ms;
+}
+.warm-up-delay-2 {
+  animation-delay: 180ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
