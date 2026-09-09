@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A second push to the same branch cancels the first; nobody needs the
+# results of a commit that has already been replaced.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    # next build imports src/lib/db.ts, which throws when DATABASE_URL is
+    # missing, so the build needs a real database rather than a placeholder
+    # string. A service container also lets the migration actually run, which
+    # is the only way to know the committed SQL applies to an empty database.
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: envision_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/envision_ci?schema=public
+      # Not a real secret: no CI job serves a session to anyone.
+      AUTH_SECRET: ci-only-not-a-real-secret
+      AUTH_URL: http://localhost:3000
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      # postinstall runs prisma generate, so the client exists after this.
+      - run: npm ci
+
+      - name: Migrations apply to an empty database
+        run: npx prisma migrate deploy
+
+      # Catches a schema.prisma edited without a matching migration. Exits 2
+      # when they have drifted apart, naming the column that moved.
+      - name: Schema matches the migrations
+        run: npx prisma migrate diff --from-config-datasource --to-schema=prisma/schema.prisma --exit-code
+
+      - run: npm run lint
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - run: npm test
+
+      - run: npm run build

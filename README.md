@@ -253,8 +253,8 @@ docker run -d --name envision-db \
 Then:
 
 ```bash
-npx prisma db push     # create the tables
-npx prisma db seed     # 8 members, 4 projects, 30 tasks, and a history
+npx prisma migrate deploy   # create the tables
+npx prisma db seed          # 8 members, 4 projects, 30 tasks, and a history
 npm run dev            # http://localhost:3000
 ```
 
