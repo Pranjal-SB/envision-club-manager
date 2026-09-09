@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 
 export const metadata = {
-  title: "Envision — club management",
+  title: "Envision: club management",
   description:
     "Members, projects, teams, and tasks for Team Envision. Who is doing what, and what is late.",
 };
@@ -13,17 +13,17 @@ const ROLES = [
   {
     role: "Admin",
     sees: "Projects at risk",
-    why: "Nobody has ever acted on a member count, so headcount sits in the margin and the projects about to slip lead the page.",
+    why: "The projects about to slip come first. Headcount is a number nobody acts on, so it sits in the margin.",
   },
   {
     role: "Project lead",
     sees: "Work nobody owns",
-    why: "An unassigned task is the one thing only a lead can resolve. Their own assignments come second — they are a member too, but that is not why they opened this.",
+    why: "An unassigned task is the one thing only a lead can fix. Their own tasks come second, below the ones with no name on them.",
   },
   {
     role: "Member",
     sees: "What of theirs is late",
-    why: "The only question they came to ask, answered in the first line instead of assembled from four tiles.",
+    why: "The one question they came to ask, answered in the first line instead of spread across four tiles.",
   },
 ];
 
@@ -75,9 +75,8 @@ export default async function Home() {
             </h1>
 
             <p className="warm-up warm-up-delay-1 measure mt-8 text-[1.0625rem] text-[var(--ash)]">
-              Members, projects, teams, and tasks in one place. Admins run the club, project leads
-              run their own projects, and members see the work that is theirs — enforced on the
-              server, not hidden in the interface.
+              Projects, teams, and tasks for Team Envision, in one place. Admins run the club, leads
+              run their own projects, and every member opens the page to the work that is theirs.
             </p>
 
             <div className="warm-up warm-up-delay-2 mt-10 flex flex-wrap items-center gap-4">
@@ -87,10 +86,6 @@ export default async function Home() {
               >
                 Open the demo
               </Link>
-              <p className="text-[0.875rem] text-[var(--ash)]">
-                Three accounts, password{" "}
-                <span className="text-[var(--paper)]">envision2026</span>
-              </p>
             </div>
           </div>
         </section>
@@ -104,12 +99,12 @@ export default async function Home() {
             <div className="grid gap-10 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
               <div className="min-w-0">
                 <h2 className="display text-[clamp(1.75rem,3vw,2.5rem)]">
-                  A project lead is not a kind of person.
+                  You lead a project, not the club.
                 </h2>
                 <p className="measure mt-6 text-[var(--ash)]">
-                  It is a person&rsquo;s standing within one project. The same member can lead the
-                  website and be an ordinary contributor on the sponsorship drive, so leadership
-                  lives on the membership, not on the user.
+                  The same member can lead the website build and be an ordinary contributor on the
+                  sponsorship drive. Leadership belongs to the project you are in, so it is stored
+                  there rather than stamped on the person.
                 </p>
               </div>
 
@@ -126,7 +121,7 @@ export default async function Home() {
                   </code>
                 </pre>
                 <p className="mt-4 text-[0.875rem] text-[var(--ash)]">
-                  Sign in as <span className="text-[var(--paper)]">rohan@envision.club</span> — he
+                  Sign in as <span className="text-[var(--paper)]">rohan@envision.club</span>, he
                   leads one project and follows another.
                 </p>
               </div>
@@ -173,7 +168,7 @@ export default async function Home() {
                   className="rounded-[3px] border border-[var(--ink-edge)]"
                 />
                 <figcaption className="mt-3 text-[0.875rem] text-[var(--ash)]">
-                  Admin — the projects about to slip, first.
+                  Admin: the projects about to slip, first.
                 </figcaption>
               </figure>
               <figure>
@@ -185,7 +180,7 @@ export default async function Home() {
                   className="rounded-[3px] border border-[var(--ink-edge)]"
                 />
                 <figcaption className="mt-3 text-[0.875rem] text-[var(--ash)]">
-                  A project — status, owner, deadline, and who may change what.
+                  A project: status, owner, deadline, and who may change what.
                 </figcaption>
               </figure>
             </div>
@@ -198,14 +193,15 @@ export default async function Home() {
               Have a look around.
             </h2>
             <p className="measure mt-5 text-[var(--ash)]">
-              Sign in as an admin, a project lead, and a member. The same links lead to different
-              pages, and the server will refuse anything the interface does not offer you.
+              Three accounts are waiting on the sign-in page, one for each role. Try the same links
+              as all three: the pages differ, and the server refuses anything the interface does not
+              offer you.
             </p>
             <Link
               href="/login"
-              className="mt-8 inline-block rounded-[3px] bg-[var(--glow)] px-5 py-2.5 font-semibold text-[var(--ink)] transition-opacity hover:opacity-90"
+              className="mt-8 inline-block rounded-[3px] border border-[var(--ink-edge)] px-5 py-2.5 text-[var(--paper)] transition-colors hover:border-[var(--glow)] hover:text-[var(--glow)]"
             >
-              Open the demo
+              Sign in
             </Link>
           </div>
         </section>
@@ -214,7 +210,17 @@ export default async function Home() {
       <footer className="border-t border-[var(--ink-edge)]">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-8 text-[0.8125rem] text-[var(--ash)] sm:px-8">
           <p>Built for Team Envision · Aaruush &rsquo;26</p>
-          <p>Next.js, Postgres, Prisma</p>
+          <p>
+            Made by{" "}
+            <a
+              href="https://psbhatnagar.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--paper)] hover:text-[var(--glow)]"
+            >
+              Pranjal
+            </a>
+          </p>
         </div>
       </footer>
     </div>

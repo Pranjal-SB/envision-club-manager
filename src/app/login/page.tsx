@@ -1,10 +1,11 @@
 import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
 import { auth, signIn } from "@/auth";
 import { prisma } from "@/lib/db";
 
-export const metadata = { title: "Sign in — Envision" };
+export const metadata = { title: "Sign in: Envision" };
 
 const DEMO_ACCOUNTS = [
   { role: "Admin", email: "aditi@envision.club" },
@@ -21,7 +22,7 @@ export default async function LoginPage({
     Trusting the token alone here causes an infinite redirect loop: if the
     account behind it is gone (removed from the club, or a rebuilt database),
     the app pages bounce to /login while /login bounces back to /dashboard.
-    The token is a cache, so verify the account still exists — the same rule
+    The token is a cache, so verify the account still exists; the same rule
     guard.ts follows.
   */
   const session = await auth();
@@ -67,19 +68,21 @@ export default async function LoginPage({
         />
 
         <div className="relative flex h-full flex-col justify-between p-12">
-          {/* The full lockup earns its space here — this is the one screen
+          {/* The full lockup earns its space here: this is the one screen
               where the product introduces itself. */}
           {/* self-start matters: this is a column flex container, whose default
               align-items:stretch would pull the logo to the full column width
               and squash the lockup. w-auto alone does not win against stretch. */}
-          <Image
-            src="/brand/envision-logo.png"
-            alt="Team Envision"
-            width={1240}
-            height={392}
-            priority
-            className="h-20 w-auto shrink-0 self-start"
-          />
+          <Link href="/" className="self-start">
+            <Image
+              src="/brand/envision-logo.png"
+              alt="Team Envision"
+              width={1240}
+              height={392}
+              priority
+              className="h-20 w-auto shrink-0"
+            />
+          </Link>
 
           <div>
             <h1 className="display measure text-[clamp(2.25rem,3.6vw,3.25rem)]">
@@ -97,14 +100,16 @@ export default async function LoginPage({
 
       <section className="flex items-center justify-center px-5 py-16 sm:px-10">
         <div className="w-full max-w-sm">
-          <Image
-            src="/brand/envision-logo.png"
-            alt="Team Envision"
-            width={1240}
-            height={392}
-            priority
-            className="mb-10 h-11 w-auto lg:hidden"
-          />
+          <Link href="/" className="mb-10 block w-fit lg:hidden">
+            <Image
+              src="/brand/envision-logo.png"
+              alt="Team Envision"
+              width={1240}
+              height={392}
+              priority
+              className="h-11 w-auto"
+            />
+          </Link>
 
           <h2 className="display text-[1.75rem]">Sign in</h2>
 
