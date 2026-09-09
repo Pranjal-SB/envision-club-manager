@@ -1,0 +1,131 @@
+import { redirect } from "next/navigation";
+import { AuthError } from "next-auth";
+import { auth, signIn } from "@/auth";
+
+export const metadata = { title: "Sign in — Envision" };
+
+const DEMO_ACCOUNTS = [
+  { role: "Admin", email: "aditi@envision.club" },
+  { role: "Project lead", email: "rohan@envision.club" },
+  { role: "Member", email: "arjun@envision.club" },
+];
+
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string; next?: string }>;
+}) {
+  const session = await auth();
+  if (session?.user?.id) redirect("/dashboard");
+
+  const { error, next } = await searchParams;
+
+  async function authenticate(formData: FormData) {
+    "use server";
+    const target = String(formData.get("next") || "/dashboard");
+    try {
+      await signIn("credentials", {
+        email: formData.get("email"),
+        password: formData.get("password"),
+        redirectTo: target.startsWith("/") ? target : "/dashboard",
+      });
+    } catch (err) {
+      // NEXT_REDIRECT is how a successful sign-in leaves this function.
+      if (err instanceof AuthError) redirect("/login?error=1");
+      throw err;
+    }
+  }
+
+  return (
+    <div className="grid min-h-dvh lg:grid-cols-[1.1fr_1fr]">
+      {/* The lit half. A dim room with one source, which is the whole idea. */}
+      <section className="relative hidden overflow-hidden border-r border-[var(--ink-edge)] lg:block">
+        <div
+          aria-hidden
+          className="absolute -top-40 -left-24 size-[36rem] rounded-full opacity-[0.18] blur-[90px]"
+          style={{ background: "radial-gradient(circle, var(--glow), transparent 65%)" }}
+        />
+        <div className="relative flex h-full flex-col justify-between p-12">
+          <p className="display text-[1.25rem]">Envision</p>
+          <div>
+            <h1 className="display measure text-[clamp(2.5rem,4vw,3.75rem)]">
+              Everything the club is building, and what is running late.
+            </h1>
+            <p className="measure mt-6 text-[var(--ash)]">
+              Projects, teams, and tasks in one place. Leads run their own projects. Members see the
+              work that is theirs.
+            </p>
+          </div>
+          <p className="text-[0.8125rem] text-[var(--ash)]">Aaruush &rsquo;26</p>
+        </div>
+      </section>
+
+      <section className="flex items-center justify-center px-5 py-16 sm:px-10">
+        <div className="w-full max-w-sm">
+          <h2 className="display text-[2rem]">Sign in</h2>
+
+          <form action={authenticate} className="mt-8 space-y-5">
+            <input type="hidden" name="next" value={next ?? "/dashboard"} />
+
+            <div className="space-y-2">
+              <label htmlFor="email" className="block text-[0.875rem] text-[var(--ash)]">
+                Email
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                autoComplete="email"
+                autoFocus
+                className="w-full rounded-[3px] border border-[var(--ink-edge)] bg-[var(--ink-lit)] px-3 py-2.5 text-[var(--paper)] transition-colors placeholder:text-[var(--ash)] hover:border-[var(--ash)]"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="password" className="block text-[0.875rem] text-[var(--ash)]">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                autoComplete="current-password"
+                className="w-full rounded-[3px] border border-[var(--ink-edge)] bg-[var(--ink-lit)] px-3 py-2.5 text-[var(--paper)] transition-colors hover:border-[var(--ash)]"
+              />
+            </div>
+
+            {error && (
+              <p role="alert" className="text-[0.875rem] text-[var(--ember)]">
+                Email or password is incorrect.
+              </p>
+            )}
+
+            <button
+              type="submit"
+              className="w-full rounded-[3px] bg-[var(--glow)] px-4 py-2.5 font-medium text-[#17130f] transition-opacity hover:opacity-90"
+            >
+              Sign in
+            </button>
+          </form>
+
+          {/* This is a recruitment submission; a reviewer needs a way in. */}
+          <div className="mt-10 border-t border-[var(--ink-edge)] pt-5">
+            <p className="text-[0.8125rem] text-[var(--ash)]">
+              Demo accounts, password <span className="text-[var(--paper)]">envision2026</span>
+            </p>
+            <ul className="mt-3 space-y-1.5">
+              {DEMO_ACCOUNTS.map((account) => (
+                <li key={account.email} className="flex justify-between gap-4 text-[0.8125rem]">
+                  <span className="text-[var(--ash)]">{account.role}</span>
+                  <span className="text-[var(--paper)]">{account.email}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
