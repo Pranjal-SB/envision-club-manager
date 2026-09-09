@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { deleteTask, setTaskStatus } from "@/app/actions/tasks";
 import { TaskForm } from "@/components/TaskForm";
+import { rowAction, rowActions } from "@/components/ui";
 import type { ProjectTask } from "@/lib/queries";
 import { STATUS_LABEL, dueState, formatDeadline, type TaskStatus } from "@/lib/format";
 
@@ -207,23 +208,23 @@ function TaskCard({
       </div>
 
       {canManage && (
-        <div className="mt-2.5 flex flex-wrap items-center gap-x-3 text-[0.75rem]">
+        <div className={`${rowActions} mt-1.5 text-[0.75rem]`}>
           {confirming ? (
             <>
               {/* Two steps, because deleting a task destroys its history and
                   nothing here can undo it. */}
-              <span className="text-[var(--ash)]">Delete this task?</span>
+              <span className="px-2 text-[var(--ash)]">Delete this task?</span>
               <button
                 type="button"
                 onClick={onDelete}
-                className="text-[var(--ember)] transition-opacity hover:opacity-80"
+                className={`${rowAction} text-[var(--ember)] hover:opacity-80`}
               >
                 Delete
               </button>
               <button
                 type="button"
                 onClick={() => setConfirming(false)}
-                className="text-[var(--ash)] transition-colors hover:text-[var(--paper)]"
+                className={`${rowAction} text-[var(--ash)] hover:text-[var(--paper)]`}
               >
                 Keep
               </button>
@@ -233,14 +234,14 @@ function TaskCard({
               <button
                 type="button"
                 onClick={onEdit}
-                className="text-[var(--ash)] transition-colors hover:text-[var(--glow)]"
+                className={`${rowAction} text-[var(--ash)] hover:text-[var(--glow)]`}
               >
                 Edit
               </button>
               <button
                 type="button"
                 onClick={() => setConfirming(true)}
-                className="text-[var(--ash)] transition-colors hover:text-[var(--ember)]"
+                className={`${rowAction} text-[var(--ash)] hover:text-[var(--ember)]`}
               >
                 Delete
               </button>

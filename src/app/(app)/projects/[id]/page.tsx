@@ -6,6 +6,23 @@ import { TaskBoard } from "@/components/TaskBoard";
 import { TeamPanel } from "@/components/TeamPanel";
 import { AddTask } from "@/components/AddTask";
 
+/**
+ * The title is authorized the same way the page is. A project name in the
+ * browser tab is still a disclosure, so somebody who may not view the project
+ * gets the generic title rather than confirmation that it exists.
+ */
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  try {
+    await authorize("project.view", { projectId: id });
+    const project = await getProjectDetail(id);
+    if (project) return { title: `${project.name}: Envision` };
+  } catch {
+    // Unauthenticated or forbidden. The page itself redirects or 404s.
+  }
+  return { title: "Envision: club management" };
+}
+
 export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 

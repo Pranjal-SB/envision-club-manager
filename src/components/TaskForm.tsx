@@ -6,7 +6,7 @@ import { toDateInput, type TaskPriority } from "@/lib/format";
 import type { ProjectTask } from "@/lib/queries";
 
 const field =
-  "w-full rounded-[3px] border border-[var(--ink-edge)] bg-[var(--ink)] px-2.5 py-1.5 text-[0.875rem] text-[var(--paper)] transition-colors hover:border-[var(--ash)]";
+  "w-full rounded-[3px] border border-[var(--edge-control)] bg-[var(--ink)] px-2.5 py-1.5 text-[0.875rem] text-[var(--paper)] transition-colors hover:border-[var(--ash)]";
 
 const label = "block text-[0.8125rem] text-[var(--ash)]";
 

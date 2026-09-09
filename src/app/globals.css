@@ -22,6 +22,14 @@
   --ink: #111111; /* Aaruush's own page ground */
   --ink-lit: #1b1613; /* raised surface, warmed towards the orange */
   --ink-edge: #2b2320; /* hairline separation */
+  /*
+    A control's edge is not a hairline. WCAG 1.4.11 wants 3:1 for anything a
+    user has to find and operate, and --ink-edge sits at 1.17:1 against the
+    surface it is drawn on: correct for a rule between sections, invisible as
+    the boundary of a text field. This clears 3:1 on both grounds (3.32 on
+    --ink-lit, 3.49 on --ink) and stays in the warm family.
+  */
+  --edge-control: #736861;
   --glow: #ffe400; /* the filament: in progress, due soon, progress fill */
   --ember: #ef6522; /* the bulb: overdue, high priority */
   --paper: #f4f2ef; /* primary text */
@@ -37,6 +45,7 @@
   --color-ink: var(--ink);
   --color-ink-lit: var(--ink-lit);
   --color-ink-edge: var(--ink-edge);
+  --color-edge-control: var(--edge-control);
   --color-glow: var(--glow);
   --color-ember: var(--ember);
   --color-paper: var(--paper);
@@ -123,12 +132,27 @@ body {
   animation-delay: 180ms;
 }
 
+/*
+  Reduced motion means less movement, not less feedback. The blanket
+  `animation-duration: 0.01ms` that usually sits here also kills the colour
+  transitions that tell someone their click landed, which is a worse interface
+  than the one it was protecting them from.
+
+  So: drop the travel, keep the fade, and leave transitions alone. They are all
+  colour and opacity here, and none of them move anything across the screen.
+*/
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  @keyframes warm-up {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .warm-up {
+    animation-duration: 200ms;
+    animation-delay: 0ms;
   }
 }

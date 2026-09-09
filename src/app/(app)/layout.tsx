@@ -20,7 +20,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-dvh">
       <Nav actor={actor} name={user.name} />
-      <main className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">{children}</main>
+      <main id="main" className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">
+        {children}
+      </main>
     </div>
   );
 }

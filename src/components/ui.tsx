@@ -16,6 +16,20 @@ import {
   into decoration one component at a time.
 */
 
+/*
+  Actions that sit under dense content: Edit, Delete, Remove, Make lead.
+
+  As bare text they inherit the 12px line box and end up 19px tall, under the
+  24px WCAG 2.5.8 asks for and beside each other on a phone. The padding buys a
+  36px target; the container carries `-ml-2` so the labels stay visually flush
+  with the content above them.
+*/
+export const rowAction =
+  "inline-flex min-h-9 items-center rounded-[3px] px-2 transition-colors";
+
+/** The container for a row of `rowAction` buttons. */
+export const rowActions = "-ml-2 flex flex-wrap items-center gap-x-1";
+
 const DUE_STYLE: Record<DueState, string> = {
   overdue: "text-[var(--ember)]",
   soon: "text-[var(--glow)]",
@@ -139,7 +153,7 @@ export function EmptyState({
       {action && href && (
         <Link
           href={href}
-          className="mt-2 inline-block text-[var(--glow)] underline-offset-4 hover:underline"
+          className="mt-1 inline-flex min-h-9 items-center text-[var(--glow)] underline-offset-4 hover:underline"
         >
           {action}
         </Link>

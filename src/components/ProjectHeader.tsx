@@ -2,11 +2,11 @@
 
 import { useRef, useState, useTransition } from "react";
 import { deleteProject, setProjectArchived, updateProject } from "@/app/actions/projects";
-import { ProgressBar } from "@/components/ui";
+import { ProgressBar, rowAction, rowActions } from "@/components/ui";
 import { formatDeadline, pluralise, toDateInput, type Progress } from "@/lib/format";
 
 const field =
-  "w-full rounded-[3px] border border-[var(--ink-edge)] bg-[var(--ink)] px-2.5 py-2 text-[0.9375rem] text-[var(--paper)] transition-colors hover:border-[var(--ash)]";
+  "w-full rounded-[3px] border border-[var(--edge-control)] bg-[var(--ink)] px-2.5 py-2 text-[0.9375rem] text-[var(--paper)] transition-colors hover:border-[var(--ash)]";
 
 interface Props {
   project: {
@@ -180,25 +180,25 @@ export function ProjectHeader({ project, overdue, canEdit, canDelete }: Props) {
       )}
 
       {(canEdit || canDelete) && (
-        <div className="mt-4 flex flex-wrap items-center gap-x-4 text-[0.8125rem]">
+        <div className={`${rowActions} mt-3 text-[0.8125rem]`}>
           {confirming ? (
             <>
               {/* Deleting a project takes its tasks and its history with it. */}
-              <span className="text-[var(--ash)]">
+              <span className="px-2 text-[var(--ash)]">
                 Delete {project.name} and all {project.progress.total}{" "}
                 {pluralise(project.progress.total, "task")}?
               </span>
               <button
                 type="button"
                 onClick={destroy}
-                className="text-[var(--ember)] transition-opacity hover:opacity-80"
+                className={`${rowAction} text-[var(--ember)] hover:opacity-80`}
               >
                 Delete
               </button>
               <button
                 type="button"
                 onClick={() => setConfirming(false)}
-                className="text-[var(--ash)] transition-colors hover:text-[var(--paper)]"
+                className={`${rowAction} text-[var(--ash)] hover:text-[var(--paper)]`}
               >
                 Keep
               </button>
@@ -209,7 +209,7 @@ export function ProjectHeader({ project, overdue, canEdit, canDelete }: Props) {
                 <button
                   type="button"
                   onClick={() => setEditing(true)}
-                  className="text-[var(--ash)] transition-colors hover:text-[var(--glow)]"
+                  className={`${rowAction} text-[var(--ash)] hover:text-[var(--glow)]`}
                 >
                   Edit project
                 </button>
@@ -218,7 +218,7 @@ export function ProjectHeader({ project, overdue, canEdit, canDelete }: Props) {
                 <button
                   type="button"
                   onClick={() => setArchived(!project.archived)}
-                  className="text-[var(--ash)] transition-colors hover:text-[var(--glow)]"
+                  className={`${rowAction} text-[var(--ash)] hover:text-[var(--glow)]`}
                 >
                   {project.archived ? "Restore project" : "Archive project"}
                 </button>
@@ -227,7 +227,7 @@ export function ProjectHeader({ project, overdue, canEdit, canDelete }: Props) {
                 <button
                   type="button"
                   onClick={() => setConfirming(true)}
-                  className="text-[var(--ash)] transition-colors hover:text-[var(--ember)]"
+                  className={`${rowAction} text-[var(--ash)] hover:text-[var(--ember)]`}
                 >
                   Delete project
                 </button>

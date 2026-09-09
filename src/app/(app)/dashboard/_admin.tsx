@@ -147,7 +147,7 @@ export function AdminView({ data }: { data: AdminDashboard }) {
             )}
             <Link
               href="/activity"
-              className="mt-4 inline-block text-[0.875rem] text-[var(--glow)] underline-offset-4 hover:underline"
+              className="mt-3 inline-flex min-h-9 items-center text-[0.875rem] text-[var(--glow)] underline-offset-4 hover:underline"
             >
               All activity
             </Link>

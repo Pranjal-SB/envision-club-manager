@@ -3,7 +3,7 @@
 import { useRef, useState, useTransition } from "react";
 import { createProject } from "@/app/actions/projects";
 import { createMember, removeMember, setGlobalRole } from "@/app/actions/members";
-import { Person } from "@/components/ui";
+import { Person, rowAction, rowActions } from "@/components/ui";
 import { pluralise } from "@/lib/format";
 
 interface Member {
@@ -16,7 +16,7 @@ interface Member {
 }
 
 const field =
-  "w-full rounded-[3px] border border-[var(--ink-edge)] bg-[var(--ink-lit)] px-2.5 py-2 text-[0.875rem] text-[var(--paper)] transition-colors hover:border-[var(--ash)]";
+  "w-full rounded-[3px] border border-[var(--edge-control)] bg-[var(--ink-lit)] px-2.5 py-2 text-[0.875rem] text-[var(--paper)] transition-colors hover:border-[var(--ash)]";
 
 export function AdminPanels({ actorId, members }: { actorId: string; members: Member[] }) {
   const [error, setError] = useState<string | null>(null);
@@ -181,16 +181,16 @@ export function AdminPanels({ actorId, members }: { actorId: string; members: Me
                 {member.taskCount} {pluralise(member.taskCount, "task")}
               </p>
 
-              <div className="ml-8 flex flex-wrap items-center gap-x-3 gap-y-1 sm:ml-0 sm:justify-self-end">
+              <div
+                className={`${rowActions} ml-6 gap-y-1 text-[0.8125rem] sm:ml-0 sm:justify-self-end`}
+              >
                 {member.id === actorId ? (
-                  <span className="text-[0.8125rem] text-[var(--ash)]">You · Admin</span>
+                  <span className="px-2 text-[var(--ash)]">You · Admin</span>
                 ) : confirmingId === member.id ? (
                   <>
                     {/* Removing somebody unassigns their tasks and cannot be
                         undone, so it asks first. Their history survives. */}
-                    <span className="text-[0.8125rem] text-[var(--ash)]">
-                      Remove {member.name}?
-                    </span>
+                    <span className="px-2 text-[var(--ash)]">Remove {member.name}?</span>
                     <button
                       type="button"
                       onClick={() => {
@@ -199,14 +199,14 @@ export function AdminPanels({ actorId, members }: { actorId: string; members: Me
                         submit(removeMember, data);
                         setConfirmingId(null);
                       }}
-                      className="text-[0.8125rem] text-[var(--ember)] transition-opacity hover:opacity-80"
+                      className={`${rowAction} text-[var(--ember)] hover:opacity-80`}
                     >
                       Remove
                     </button>
                     <button
                       type="button"
                       onClick={() => setConfirmingId(null)}
-                      className="text-[0.8125rem] text-[var(--ash)] transition-colors hover:text-[var(--paper)]"
+                      className={`${rowAction} text-[var(--ash)] hover:text-[var(--paper)]`}
                     >
                       Keep
                     </button>
@@ -222,7 +222,7 @@ export function AdminPanels({ actorId, members }: { actorId: string; members: Me
                         data.set("role", event.target.value);
                         submit(setGlobalRole, data);
                       }}
-                      className="rounded-[3px] border border-[var(--ink-edge)] bg-[var(--ink-lit)] px-2 py-1 text-[0.8125rem] text-[var(--paper)]"
+                      className="ml-2 min-h-9 rounded-[3px] border border-[var(--edge-control)] bg-[var(--ink-lit)] px-2 text-[0.8125rem] text-[var(--paper)]"
                     >
                       <option value="MEMBER">Member</option>
                       <option value="ADMIN">Admin</option>
@@ -230,7 +230,7 @@ export function AdminPanels({ actorId, members }: { actorId: string; members: Me
                     <button
                       type="button"
                       onClick={() => setConfirmingId(member.id)}
-                      className="text-[0.8125rem] text-[var(--ash)] transition-colors hover:text-[var(--ember)]"
+                      className={`${rowAction} text-[var(--ash)] hover:text-[var(--ember)]`}
                     >
                       Remove
                     </button>

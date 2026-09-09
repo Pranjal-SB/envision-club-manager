@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { addProjectMember, removeProjectMember, setProjectRole } from "@/app/actions/projects";
-import { Person } from "@/components/ui";
+import { Person, rowAction, rowActions } from "@/components/ui";
 
 interface TeamMember {
   id: string;
@@ -56,14 +56,14 @@ export function TeamPanel({ projectId, team, canManage, addable }: Props) {
             </div>
 
             {canManage && (
-              <div className="mt-1.5 ml-8 flex flex-wrap gap-x-3 text-[0.75rem]">
+              <div className={`${rowActions} ml-6 text-[0.75rem]`}>
                 {member.role === "MEMBER" && (
                   <button
                     type="button"
                     onClick={() =>
                       run(setProjectRole, { projectId, userId: member.userId, role: "LEAD" })
                     }
-                    className="text-[var(--ash)] transition-colors hover:text-[var(--glow)]"
+                    className={`${rowAction} text-[var(--ash)] hover:text-[var(--glow)]`}
                   >
                     Make lead
                   </button>
@@ -71,7 +71,7 @@ export function TeamPanel({ projectId, team, canManage, addable }: Props) {
                 <button
                   type="button"
                   onClick={() => run(removeProjectMember, { projectId, userId: member.userId })}
-                  className="text-[var(--ash)] transition-colors hover:text-[var(--ember)]"
+                  className={`${rowAction} text-[var(--ash)] hover:text-[var(--ember)]`}
                 >
                   Remove
                 </button>
@@ -101,7 +101,7 @@ export function TeamPanel({ projectId, team, canManage, addable }: Props) {
               name="userId"
               required
               defaultValue=""
-              className="min-w-0 flex-1 rounded-[3px] border border-[var(--ink-edge)] bg-[var(--ink-lit)] px-2 py-1.5 text-[0.875rem] text-[var(--paper)]"
+              className="min-w-0 flex-1 rounded-[3px] border border-[var(--edge-control)] bg-[var(--ink-lit)] px-2 py-1.5 text-[0.875rem] text-[var(--paper)]"
             >
               <option value="" disabled>
                 Choose a member

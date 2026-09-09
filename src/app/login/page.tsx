@@ -79,15 +79,17 @@ export default async function LoginPage({
               alt="Team Envision"
               width={1240}
               height={392}
-              priority
               className="h-20 w-auto shrink-0"
             />
           </Link>
 
           <div>
-            <h1 className="display measure text-[clamp(2.25rem,3.6vw,3.25rem)]">
+            {/* Marketing copy, not the page's heading. The heading is "Sign in",
+                which is what this page is for and the only part of it that
+                survives to mobile. */}
+            <p className="display measure text-[clamp(2.25rem,3.6vw,3.25rem)]">
               Everything the club is building, and what is running late.
-            </h1>
+            </p>
             <p className="measure mt-6 text-[var(--ash)]">
               Projects, teams, and tasks in one place. Leads run their own projects. Members see the
               work that is theirs.
@@ -98,7 +100,7 @@ export default async function LoginPage({
         </div>
       </section>
 
-      <section className="flex items-center justify-center px-5 py-16 sm:px-10">
+      <main className="flex items-center justify-center px-5 py-16 sm:px-10">
         <div className="w-full max-w-sm">
           <Link href="/" className="mb-10 block w-fit lg:hidden">
             <Image
@@ -106,12 +108,11 @@ export default async function LoginPage({
               alt="Team Envision"
               width={1240}
               height={392}
-              priority
               className="h-11 w-auto"
             />
           </Link>
 
-          <h2 className="display text-[1.75rem]">Sign in</h2>
+          <h1 className="display text-[1.75rem]">Sign in</h1>
 
           <form action={authenticate} className="mt-8 space-y-5">
             <input type="hidden" name="next" value={next ?? "/dashboard"} />
@@ -127,7 +128,7 @@ export default async function LoginPage({
                 required
                 autoComplete="email"
                 autoFocus
-                className="w-full rounded-[3px] border border-[var(--ink-edge)] bg-[var(--ink-lit)] px-3 py-2.5 text-[var(--paper)] transition-colors placeholder:text-[var(--ash)] hover:border-[var(--ash)]"
+                className="w-full rounded-[3px] border border-[var(--edge-control)] bg-[var(--ink-lit)] px-3 py-2.5 text-[var(--paper)] transition-colors placeholder:text-[var(--ash)] hover:border-[var(--ash)]"
               />
             </div>
 
@@ -141,7 +142,7 @@ export default async function LoginPage({
                 type="password"
                 required
                 autoComplete="current-password"
-                className="w-full rounded-[3px] border border-[var(--ink-edge)] bg-[var(--ink-lit)] px-3 py-2.5 text-[var(--paper)] transition-colors hover:border-[var(--ash)]"
+                className="w-full rounded-[3px] border border-[var(--edge-control)] bg-[var(--ink-lit)] px-3 py-2.5 text-[var(--paper)] transition-colors hover:border-[var(--ash)]"
               />
             </div>
 
@@ -174,7 +175,7 @@ export default async function LoginPage({
             </ul>
           </div>
         </div>
-      </section>
+      </main>
     </div>
   );
 }

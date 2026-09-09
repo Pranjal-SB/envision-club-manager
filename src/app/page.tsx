@@ -41,7 +41,6 @@ export default async function Home() {
             alt=""
             width={220}
             height={316}
-            priority
             className="h-8 w-auto"
           />
           <span className="display text-[1.125rem]">Envision</span>
@@ -163,8 +162,9 @@ export default async function Home() {
                 <Image
                   src="/brand/preview-dashboard.png"
                   alt="The admin dashboard, leading with the projects that need attention"
-                  width={1440}
+                  width={1424}
                   height={920}
+                  sizes="(min-width: 1024px) 45vw, 90vw"
                   className="rounded-[3px] border border-[var(--ink-edge)]"
                 />
                 <figcaption className="mt-3 text-[0.875rem] text-[var(--ash)]">
@@ -175,8 +175,9 @@ export default async function Home() {
                 <Image
                   src="/brand/preview-board.png"
                   alt="A project board with tasks in three status columns and the team panel"
-                  width={1440}
+                  width={1424}
                   height={920}
+                  sizes="(min-width: 1024px) 45vw, 90vw"
                   className="rounded-[3px] border border-[var(--ink-edge)]"
                 />
                 <figcaption className="mt-3 text-[0.875rem] text-[var(--ash)]">
@@ -216,7 +217,7 @@ export default async function Home() {
               href="https://psbhatnagar.in"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[var(--paper)] hover:text-[var(--glow)]"
+              className="inline-flex min-h-11 items-center text-[var(--paper)] hover:text-[var(--glow)]"
             >
               Pranjal
             </a>
