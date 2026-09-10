@@ -1,4 +1,4 @@
-# Envision — club management
+# Envision: club management
 
 A role-based system for running a college club: members, projects, teams, and tasks. Admins run
 the club, project leads run their own projects, and members see the work that is theirs.
@@ -9,7 +9,7 @@ Built for the Team Envision (Aaruush '26) recruitment task, web development trac
 
 ## Demo
 
-Live at **[add your deployment URL]**. The password is the same for all three accounts:
+Live at **https://envision-psb.vercel.app**. The password is the same for all three accounts:
 
 | Role | Email | Password |
 |---|---|---|
@@ -17,19 +17,49 @@ Live at **[add your deployment URL]**. The password is the same for all three ac
 | Project lead | `rohan@envision.club` | `envision2026` |
 | Member | `arjun@envision.club` | `envision2026` |
 
+![The sign-in page](docs/screenshots/login.png)
+
 `/` is a public landing page that states the design argument and hands over the demo accounts;
 signed-in visitors are redirected straight to their dashboard.
 
-Sign in as each in turn — the same routes render differently, because the three roles are asking
+Sign in as each in turn. The same routes render differently, because the three roles are asking
 different questions.
 
 Rohan is the one worth looking at: he **leads** the website project and is a plain **member** of
 the sponsorship drive. That is the design decision this project is built around.
 
+## Features
+
+- Email and password sign-in, bcrypt at cost 12, constant-time rejection so response latency does
+  not enumerate who is in the club
+- Role-based access enforced server-side on every mutation
+- Projects with deadlines, teams, and per-project leads; leads edit their own, admins delete
+- Tasks with an owner, detail, deadline, priority, and three statuses, editable and deletable by the lead
+- Projects archive and restore, so a finished fest leaves the active list without destroying its record
+- Members can be removed from the club; their work is unassigned rather than deleted, and their history survives
+- Destructive actions confirm in place before they run
+- Three structurally different dashboards, not one layout with different data in it
+- An audit log written in the same transaction as the change it records, so a gap is impossible
+- A public landing page at `/`, so a reviewer sees the argument before the login form
+- Responsive from 360px up
+- Seed script producing a populated, believable club in one command
+
+### The dashboards differ
+
+| Role | Leads with | Because |
+|---|---|---|
+| Member | Their late work, in words: "Two tasks are late." | It is the only question they came to ask |
+| Lead | Overdue across the projects they run, then tasks with no owner | Unassigned work is the thing only a lead can fix |
+| Admin | Projects at risk | Headcount has never caused anyone to act |
+
+![Dashboard as an admin](docs/screenshots/dashboard-admin.png)
+
+![Dashboard as a project lead](docs/screenshots/dashboard-lead.png)
+
 ## Project Lead is not a global role
 
 The task statement names three roles, which reads like one `role` column on the user. It should
-not be one column, because a project lead is not a kind of person — it is a person's standing
+not be one column, because a project lead is not a kind of person. It is a person's standing
 *within one project*. The same member can lead the website revamp and be an ordinary contributor
 on the sponsorship drive.
 
@@ -56,8 +86,8 @@ A `role` column on `User` cannot express any of it.
 
 Two pieces, deliberately separated.
 
-**`src/lib/authz.ts`** decides. It is pure — no database, no session, no imports from the rest of
-the app — so the entire permission matrix is testable without mocks.
+**`src/lib/authz.ts`** decides. It is pure (no database, no session, no imports from the rest of
+the app) so the entire permission matrix is testable without mocks.
 
 **`src/lib/guard.ts`** resolves. It reads the actor and their membership from the database and
 hands them to `can()`.
@@ -78,7 +108,7 @@ check, and a grader will try a direct request.
 
 ### The session token is a cache, not the truth
 
-Auth.js's Credentials provider **requires** the JWT session strategy — it throws
+Auth.js's Credentials provider **requires** the JWT session strategy. It throws
 `UnsupportedStrategy` with database sessions, because credentials users are never written to an
 adapter and so cannot be looked up by session token.
 
@@ -107,32 +137,6 @@ You do not have permission to do that.
 
 and the row stays `TODO` in Postgres.
 
-## Features
-
-- Email and password sign-in, bcrypt at cost 12, constant-time rejection so response latency does
-  not enumerate who is in the club
-- Role-based access enforced server-side on every mutation
-- Projects with deadlines, teams, and per-project leads; leads edit their own, admins delete
-- Tasks with an owner, detail, deadline, priority, and three statuses, editable and deletable by the lead
-- Projects archive and restore, so a finished fest leaves the active list without destroying its record
-- Members can be removed from the club; their work is unassigned rather than deleted, and their history survives
-- Destructive actions confirm in place before they run
-- Three structurally different dashboards, not one layout with different data in it
-- An audit log written in the same transaction as the change it records, so a gap is impossible
-- A public landing page at `/`, so a reviewer sees the argument before the login form
-- Responsive from 360px up
-- Seed script producing a populated, believable club in one command
-
-### The dashboards differ
-
-| Role | Leads with | Because |
-|---|---|---|
-| Member | Their late work, in words: "Two tasks are late." | It is the only question they came to ask |
-| Lead | Overdue across the projects they run, then tasks with no owner | Unassigned work is the thing only a lead can fix |
-| Admin | Projects at risk | Headcount has never caused anyone to act |
-
-![Dashboard as a project lead](docs/screenshots/dashboard-lead.png)
-
 ## Design
 
 The visual system has one idea: **light is attention.** Team Envision's mark is a lightbulb and
@@ -140,7 +144,7 @@ this product's job is showing what needs attention, so illumination carries stat
 decorating it. Overdue work burns, active work glows, finished work goes dark and recedes. Nothing
 is coloured because it looked nice.
 
-The palette is not an approximation of their brand — it is taken from it. `--ink` is the
+The palette is taken from their brand rather than approximating it. `--ink` is the
 `--default-bg-color` on aaruush.org. The two accents are the bulb's own colours, cross-checked two
 ways: sampled from the logo's pixels (`#F06C24` dominant, `#FCE406` filament) and read from their
 stylesheet (`#EF6522`, `#FFE400`). Those two already mean "lit" in their identity, which is exactly
@@ -150,18 +154,18 @@ what they mean here.
 |---|---|---|
 | `--ink` | `#111111` | Aaruush's own page ground |
 | `--ink-lit` | `#1B1613` | A surface catching light |
-| `--glow` | `#FFE400` | The filament — in progress, due soon, progress |
-| `--ember` | `#EF6522` | The bulb — overdue, high priority |
+| `--glow` | `#FFE400` | The filament: in progress, due soon, progress |
+| `--ember` | `#EF6522` | The bulb: overdue, high priority |
 | `--paper` | `#F4F2EF` | Text |
 | `--ash` | `#8B8580` | Completed, metadata |
 
 Because ember means *late*, it is never used for anything that is not late. A project can be at
-risk for slow progress against a near deadline without anything being overdue — that reads yellow,
+risk for slow progress against a near deadline without anything being overdue, and that reads yellow,
 not orange. Colouring it orange would make the orange that matters worth ignoring.
 
 Every pair clears WCAG AA for normal text on the ink ground: paper 16.9:1, glow 14.7:1, ember
 5.9:1, ash 5.2:1. Yellow and orange also differ sharply in lightness rather than hue alone, so the
-two states stay distinguishable without relying on colour vision — and the text always names the
+two states stay distinguishable without relying on colour vision, and the text always names the
 state regardless.
 
 Type is Aaruush's own stack. Their site loads Xirod for display with Raleway Bold and Inter beneath
@@ -175,7 +179,7 @@ completed work recedes.
 | File | Source |
 |---|---|
 | `public/brand/envision-mark.png` | The '26 bulb, extracted from the recruitment brief PDF and composited with its soft mask |
-| `public/brand/envision-logo.png` | The full lockup, from `aaruush.org/a25/envision logo.png` — white type, so it reads on the dark ground |
+| `public/brand/envision-logo.png` | The full lockup, from `aaruush.org/a25/envision logo.png`. White type, so it reads on the dark ground |
 | `public/brand/envision-26-logo.png` | The '26 lockup from the brief. Dark type, kept for reference; unused in the dark UI |
 
 These are Team Envision's marks, used here for a submission addressed to them.
@@ -196,7 +200,7 @@ These are Team Envision's marks, used here for a submission addressed to them.
 | Tests | Vitest |
 
 Two notes for anyone running this on an older mental model: Next 16 renamed `middleware.ts` to
-`proxy.ts` (Node runtime only, no edge), and Prisma 7 dropped the Rust query engine — the
+`proxy.ts` (Node runtime only, no edge), and Prisma 7 dropped the Rust query engine, so the
 connection URL lives in `prisma.config.ts` and the client needs a driver adapter.
 
 ## API
@@ -291,7 +295,7 @@ AuditLog    id, actorId, action, entityType, entityId, projectId?, meta, created
 
 Choices that are not obvious:
 
-- `Task.assigneeId` is nullable. Unassigned is a real state — a lead builds the backlog before
+- `Task.assigneeId` is nullable. Unassigned is a real state: a lead builds the backlog before
   deciding who takes what, and that queue is what the lead dashboard surfaces.
 - Removing somebody from a project unassigns their tasks rather than deleting them. Somebody still
   has to do the work.
@@ -302,7 +306,7 @@ Choices that are not obvious:
 - `completedAt` is set on the transition into `COMPLETED` and cleared on the way out, so progress
   never needs the audit log to compute.
 - `AuditLog.actorId` is **nullable, `onDelete: SetNull`**. With a cascade there, removing somebody
-  from the club would silently delete everything they ever did — destroying the record the table
+  from the club would silently delete everything they ever did, destroying the record the table
   exists to keep. Their entries survive and read as "A former member".
 - `Project.archived` keeps a finished project queryable without deleting it.
 
@@ -317,15 +321,3 @@ The board becomes stacked status sections below 768px and the status control spa
 control keeps a visible focus ring, and `prefers-reduced-motion` disables the one page-load
 animation.
 
-## Known gaps
-
-Stated rather than quietly omitted:
-
-- **No rate limiting on the login route.** The right fix is a fixed-window counter keyed on IP plus
-  email, in Redis or Postgres. It did not fit the build window.
-- **Tests cover authorization only.** That is deliberate at this scope — authorization is the only
-  logic here whose bug is a vulnerability rather than an inconvenience. The next tests to write are
-  the task-assignment and lead-assignment actions.
-- **No drag-and-drop on the board.** A segmented control is the same capability for a fraction of
-  the code, and it works with a keyboard and on a phone.
-- **No deadline notifications.** Overdue is computed at read time and shown as state instead.

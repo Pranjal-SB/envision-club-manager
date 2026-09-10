@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
+import { prisma } from "@/lib/db";
 
 export const metadata = {
   title: "Envision: club management",
@@ -28,9 +29,23 @@ const ROLES = [
 ];
 
 export default async function Home() {
-  // Anyone already signed in wants the product, not the pitch.
+  /*
+    Anyone already signed in wants the product, not the pitch.
+
+    The token only says who you were. Trusting it alone sent anyone holding a
+    cookie for a deleted account to /dashboard, where the layout found no user
+    and bounced them to /login, so the landing page became unreachable rather
+    than merely stale. Same check login/page.tsx already makes, for the same
+    reason.
+  */
   const session = await auth();
-  if (session?.user?.id) redirect("/dashboard");
+  if (session?.user?.id) {
+    const stillExists = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { id: true },
+    });
+    if (stillExists) redirect("/dashboard");
+  }
 
   return (
     <div className="min-h-dvh">
