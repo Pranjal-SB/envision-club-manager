@@ -3,8 +3,14 @@ import bcrypt from "bcryptjs";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) throw new Error("DATABASE_URL is not set.");
+/*
+  Same precedence as prisma.config.ts. Seeding is a CLI job like a migration,
+  so when a pooled DATABASE_URL and a direct DIRECT_URL both exist, this wants
+  the direct one. Reading only DATABASE_URL made `DIRECT_URL=<prod> prisma db
+  seed` silently seed whatever .env pointed at instead, and report success.
+*/
+const connectionString = process.env.DIRECT_URL ?? process.env.DATABASE_URL;
+if (!connectionString) throw new Error("Set DATABASE_URL (or DIRECT_URL) before seeding.");
 
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
 

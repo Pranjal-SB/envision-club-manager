@@ -21,6 +21,7 @@ interface Props {
 
 export function TeamPanel({ projectId, team, canManage, addable }: Props) {
   const [error, setError] = useState<string | null>(null);
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   function run(action: (data: FormData) => Promise<{ error?: string }>, entries: Record<string, string>) {
@@ -57,24 +58,52 @@ export function TeamPanel({ projectId, team, canManage, addable }: Props) {
 
             {canManage && (
               <div className={`${rowActions} ml-6 text-[0.75rem]`}>
-                {member.role === "MEMBER" && (
-                  <button
-                    type="button"
-                    onClick={() =>
-                      run(setProjectRole, { projectId, userId: member.userId, role: "LEAD" })
-                    }
-                    className={`${rowAction} text-[var(--ash)] hover:text-[var(--glow)]`}
-                  >
-                    Make lead
-                  </button>
+                {confirmingId === member.userId ? (
+                  <>
+                    {/* Removing somebody unassigns their tasks on this project,
+                        which nothing here can undo, so it asks first like every
+                        other destructive action does. */}
+                    <span className="px-2 text-[var(--ash)]">Remove {member.name}?</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        run(removeProjectMember, { projectId, userId: member.userId });
+                        setConfirmingId(null);
+                      }}
+                      className={`${rowAction} text-[var(--ember)] hover:opacity-80`}
+                    >
+                      Remove
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setConfirmingId(null)}
+                      className={`${rowAction} text-[var(--ash)] hover:text-[var(--paper)]`}
+                    >
+                      Keep
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    {member.role === "MEMBER" && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          run(setProjectRole, { projectId, userId: member.userId, role: "LEAD" })
+                        }
+                        className={`${rowAction} text-[var(--ash)] hover:text-[var(--glow)]`}
+                      >
+                        Make lead
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setConfirmingId(member.userId)}
+                      className={`${rowAction} text-[var(--ash)] hover:text-[var(--ember)]`}
+                    >
+                      Remove
+                    </button>
+                  </>
                 )}
-                <button
-                  type="button"
-                  onClick={() => run(removeProjectMember, { projectId, userId: member.userId })}
-                  className={`${rowAction} text-[var(--ash)] hover:text-[var(--ember)]`}
-                >
-                  Remove
-                </button>
               </div>
             )}
           </li>

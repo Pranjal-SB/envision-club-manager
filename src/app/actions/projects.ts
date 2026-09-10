@@ -262,6 +262,19 @@ export async function removeProjectMember(formData: FormData): Promise<ActionRes
   try {
     const { actor } = await authorize("team.manage", { projectId });
 
+    /*
+      A lead who removes themselves leaves nobody able to run the project:
+      project.update, team.manage, and every task action require isLead, so
+      the board freezes until an admin notices. This is members.ts's last-admin
+      rule one level down, and it stops at admins for the same reason: their
+      global role gets them back in.
+    */
+    if (userId === actor.id && actor.role !== "ADMIN") {
+      return {
+        error: "You lead this project, so you cannot remove yourself. Make somebody else lead first.",
+      };
+    }
+
     const person = await prisma.user.findUniqueOrThrow({
       where: { id: userId },
       select: { name: true },
