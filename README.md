@@ -269,7 +269,8 @@ npx tsc --noEmit       # types
 
 | Variable | Required | What it is |
 |---|---|---|
-| `DATABASE_URL` | yes | PostgreSQL connection string. Used by the app and by the Prisma CLI via `prisma.config.ts`. |
+| `DATABASE_URL` | yes | PostgreSQL connection string the running app uses. On serverless, the pooled one. |
+| `DIRECT_URL` | only when pooling | A direct connection for the Prisma CLI. Migrations cannot run through a transaction pooler. Unset locally, where `DATABASE_URL` does both jobs. |
 | `AUTH_SECRET` | yes | Signs the session cookie. Generate with `npx auth secret`. |
 | `AUTH_URL` | yes | The canonical URL of the deployment. `http://localhost:3000` in development. |
 
